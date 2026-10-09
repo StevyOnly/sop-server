@@ -1,0 +1,3219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOP 后端 API 接口文档</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #1f2328;
+  --muted: #59636e;
+  --border: #d1d9e0;
+  --accent: #0969da;
+  --code-bg: #f6f8fa;
+  --sidebar-w: 300px;
+  --quote-bg: #f0f6ff;
+  --quote-border: #54aeff;
+  --warn-bg: #fff8c5;
+  --warn-border: #d4a72c;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+  line-height: 1.7;
+  font-size: 15px;
+}
+#sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  background: #fafbfc;
+  padding: 16px 0 40px;
+}
+.sidebar-title {
+  font-weight: 700;
+  font-size: 14px;
+  padding: 0 16px 10px;
+  color: var(--muted);
+  letter-spacing: .05em;
+}
+#sidebar ul { list-style: none; margin: 0; padding: 0; }
+#sidebar li a {
+  display: block;
+  padding: 3px 16px;
+  color: var(--fg);
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#sidebar li.toc-h2 { margin-top: 6px; }
+#sidebar li.toc-h2 > a { font-weight: 600; }
+#sidebar li.toc-h3 > a { padding-left: 32px; color: var(--muted); }
+#sidebar li a:hover { background: #eef1f4; }
+#sidebar li a.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  background: #eef6ff;
+}
+main {
+  margin-left: var(--sidebar-w);
+  max-width: 1000px;
+  padding: 32px 48px 96px;
+}
+h1 { font-size: 28px; border-bottom: 1px solid var(--border); padding-bottom: .3em; }
+h2 { font-size: 23px; border-bottom: 1px solid var(--border); padding-bottom: .3em; margin-top: 2.4em; }
+h3 {
+  font-size: 17px;
+  margin-top: 2.2em;
+  padding: 8px 12px;
+  background: #f6f8fa;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+}
+h4 { font-size: 15px; margin-top: 1.5em; }
+a { color: var(--accent); }
+p code, li code, td code, blockquote code {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: Consolas, "JetBrains Mono", Menlo, monospace;
+  font-size: 86%;
+  word-break: break-all;
+}
+/* 接口头部徽章 */
+.api-line { margin: 4px 0 10px; }
+.method {
+  display: inline-block;
+  padding: 1px 9px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  font-family: Consolas, monospace;
+  vertical-align: 1px;
+  margin-right: 6px;
+}
+.method-post { background: #ddf4ff; color: #0969da; border: 1px solid #54aeff; }
+.method-get { background: #dafbe1; color: #1a7f37; border: 1px solid #4ac26b; }
+.badge {
+  display: inline-block;
+  padding: 1px 9px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  vertical-align: 1px;
+  margin-right: 6px;
+}
+.badge-free { background: #eaeef2; color: #57606a; }
+.badge-jwt { background: #fbefff; color: #8250df; }
+.badge-active { background: #fff1e5; color: #bc4c00; }
+.badge-note { background: var(--warn-bg); color: #7d4e00; }
+/* 请求/响应小节标题 */
+.sec-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: .06em;
+  margin: 20px 0 8px;
+  padding: 2px 0 2px 9px;
+  border-left: 3px solid var(--accent);
+}
+.sec-title.resp { color: #1a7f37; border-left-color: #1a7f37; }
+pre {
+  background: #0d1117;
+  color: #c9d1d9;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.55;
+  margin: 8px 0 16px;
+}
+pre code {
+  font-family: Consolas, "JetBrains Mono", Menlo, monospace;
+  font-size: 13px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+.tk-key { color: #79c0ff; }
+.tk-str { color: #a5d6ff; }
+.tk-num { color: #f2cc60; }
+.tk-bool { color: #ff7b72; }
+.tk-null { color: #ff7b72; }
+blockquote {
+  margin: 12px 0;
+  padding: 8px 14px;
+  background: var(--quote-bg);
+  border-left: 4px solid var(--quote-border);
+  border-radius: 0 6px 6px 0;
+  color: #33425b;
+}
+blockquote.warn {
+  background: var(--warn-bg);
+  border-left-color: var(--warn-border);
+  color: #5c4400;
+}
+.table-wrap { overflow-x: auto; margin: 10px 0 16px; }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: #eef1f4; font-weight: 600; white-space: nowrap; }
+tbody tr:nth-child(even) { background: #fafbfc; }
+td:first-child code { white-space: nowrap; }
+td.req-yes { color: #cf222e; font-weight: 600; white-space: nowrap; }
+td.req-no { color: var(--muted); white-space: nowrap; }
+hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
+ul { padding-left: 1.6em; }
+li { margin: 3px 0; }
+#toTop {
+  position: fixed;
+  right: 24px; bottom: 24px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  display: none;
+}
+#toTop:hover { color: var(--accent); border-color: var(--accent); }
+/* 主题切换按钮 */
+#themeBtn {
+  position: fixed;
+  top: 14px; right: 14px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--muted);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 0;
+}
+#themeBtn:hover { color: var(--accent); border-color: var(--accent); }
+#themeBtn svg { width: 18px; height: 18px; }
+#themeBtn .icon-sun { display: none; }
+html[data-theme="dark"] #themeBtn .icon-sun { display: block; }
+html[data-theme="dark"] #themeBtn .icon-moon { display: none; }
+/* ===== 暗色主题 ===== */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0d1117;
+  --fg: #e6edf3;
+  --muted: #9198a1;
+  --border: #30363d;
+  --accent: #4493f8;
+  --code-bg: #161b22;
+  --quote-bg: #111a27;
+  --quote-border: #1f6feb;
+  --warn-bg: #272115;
+  --warn-border: #9e6a03;
+}
+html[data-theme="dark"] #sidebar { background: #0a0e14; }
+html[data-theme="dark"] #sidebar li a:hover { background: #161b22; }
+html[data-theme="dark"] #sidebar li a.active { background: #101b2d; }
+html[data-theme="dark"] h3 { background: #161b22; }
+html[data-theme="dark"] blockquote { color: #b6c2cf; }
+html[data-theme="dark"] blockquote.warn { color: #e3b341; }
+html[data-theme="dark"] th { background: #161b22; }
+html[data-theme="dark"] tbody tr:nth-child(even) { background: #10161d; }
+html[data-theme="dark"] .sec-title.resp { color: #3fb950; border-left-color: #238636; }
+html[data-theme="dark"] .method-post { background: #12233c; color: #79c0ff; border-color: #1f6feb; }
+html[data-theme="dark"] .method-get { background: #0f2a1c; color: #3fb950; border-color: #238636; }
+html[data-theme="dark"] .badge-free { background: #21262d; color: #9198a1; }
+html[data-theme="dark"] .badge-jwt { background: #231a36; color: #c297ff; }
+html[data-theme="dark"] .badge-active { background: #2e2014; color: #f0883e; }
+html[data-theme="dark"] .badge-note { color: #e3b341; }
+html[data-theme="dark"] td.req-yes { color: #f85149; }
+html[data-theme="dark"] #toTop { background: #161b22; color: #9198a1; }
+@media (max-width: 900px) {
+  #sidebar { display: none; }
+  main { margin-left: 0; padding: 20px 16px 64px; }
+}
+</style>
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('api-doc-theme');
+    if (!t) t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+</head>
+<body>
+<nav id="sidebar"><div class="sidebar-title">目录</div><ul>
+<li class="toc-h2"><a href="#overview">基础信息</a></li>
+<li class="toc-h2"><a href="#common">通用响应格式</a></li>
+<li class="toc-h3"><a href="#common-envelope">统一响应信封</a></li>
+<li class="toc-h3"><a href="#common-errors">业务错误码</a></li>
+<li class="toc-h3"><a href="#common-page">分页信封</a></li>
+<li class="toc-h3"><a href="#common-base">通用基础字段（BaseModel）</a></li>
+<li class="toc-h3"><a href="#common-mw">权限与中间件图例</a></li>
+<li class="toc-h2"><a href="#m-base">1. 基础模块 /base</a></li>
+<li class="toc-h3"><a href="#base-login">1.1 用户登录</a></li>
+<li class="toc-h3"><a href="#base-applogin">1.2 APP 端免密码登录</a></li>
+<li class="toc-h2"><a href="#m-user">2. 用户模块 /user</a></li>
+<li class="toc-h3"><a href="#user-getuserlist">2.1 分页获取用户列表</a></li>
+<li class="toc-h3"><a href="#user-getusersbyids">2.2 按 ID 列表批量获取用户</a></li>
+<li class="toc-h3"><a href="#user-getuserinfo">2.3 获取自身信息</a></li>
+<li class="toc-h2"><a href="#m-guide">3. 指南模块 /guides</a></li>
+<li class="toc-h3"><a href="#guide-list">3.1 分页获取指南列表</a></li>
+<li class="toc-h3"><a href="#guide-save">3.2 保存指南</a></li>
+<li class="toc-h3"><a href="#guide-status">3.3 更新指南启用状态</a></li>
+<li class="toc-h3"><a href="#guide-delete">3.4 删除指南</a></li>
+<li class="toc-h3"><a href="#guide-sample">3.5 按设备 ID 列表获取指南精简视图</a></li>
+<li class="toc-h3"><a href="#guide-steps">3.6 按故障码获取对应步骤</a></li>
+<li class="toc-h3"><a href="#guide-byids">3.7 按指南 ID 列表分页获取指南</a></li>
+<li class="toc-h2"><a href="#m-facility">4. 设备模块 /facility</a></li>
+<li class="toc-h3"><a href="#facility-list">4.1 分页获取设备列表</a></li>
+<li class="toc-h3"><a href="#facility-byids">4.2 按 ID 列表批量获取设备</a></li>
+<li class="toc-h2"><a href="#m-inquiry">5. 提问模块 /inquiries</a></li>
+<li class="toc-h3"><a href="#inquiry-list">5.1 分页获取提问列表</a></li>
+<li class="toc-h3"><a href="#inquiry-create">5.2 创建提问</a></li>
+<li class="toc-h3"><a href="#inquiry-reply">5.3 管理员回复提问</a></li>
+<li class="toc-h3"><a href="#inquiry-byids">5.4 按 ID 列表批量获取提问</a></li>
+<li class="toc-h2"><a href="#m-media">6. 媒体模块 /media</a></li>
+<li class="toc-h3"><a href="#media-upload">6.1 上传文件</a></li>
+<li class="toc-h3"><a href="#media-scene">6.2 上传现场照片</a></li>
+<li class="toc-h3"><a href="#media-create">6.3 创建媒体资源信息</a></li>
+<li class="toc-h3"><a href="#media-update">6.4 更新媒体资源信息</a></li>
+<li class="toc-h3"><a href="#media-delete">6.5 删除媒体资源</a></li>
+<li class="toc-h3"><a href="#media-list">6.6 分页获取媒体资源列表</a></li>
+<li class="toc-h2"><a href="#m-repair">7. 维修记录模块 /repairRecords</a></li>
+<li class="toc-h3"><a href="#repair-save">7.1 保存维修执行记录（PDA 提交）</a></li>
+<li class="toc-h3"><a href="#repair-list">7.2 分页获取维修记录列表</a></li>
+<li class="toc-h3"><a href="#repair-byids">7.3 按 ID 列表批量获取维修记录</a></li>
+<li class="toc-h2"><a href="#m-menu">8. 菜单与职务模块 /menu</a></li>
+<li class="toc-h3"><a href="#menu-getmenulist">8.1 分页获取菜单列表</a></li>
+<li class="toc-h3"><a href="#menu-getmenuall">8.2 获取全部菜单</a></li>
+<li class="toc-h3"><a href="#menu-savemenu">8.3 新增/更新菜单</a></li>
+<li class="toc-h3"><a href="#menu-deletemenu">8.4 删除菜单</a></li>
+<li class="toc-h3"><a href="#menu-getusermenus">8.5 获取当前用户可见菜单</a></li>
+<li class="toc-h3"><a href="#menu-getpositionlist">8.6 获取全部职务</a></li>
+<li class="toc-h3"><a href="#menu-getpositionmenus">8.7 按职务获取可见菜单</a></li>
+<li class="toc-h3"><a href="#menu-getpositionswithmenus">8.8 获取全部职务及其菜单</a></li>
+<li class="toc-h3"><a href="#menu-savepositionmenus">8.9 保存职务-菜单关联</a></li>
+<li class="toc-h2"><a href="#m-execoption">9. 执行说明选项模块 /executionOption</a></li>
+<li class="toc-h3"><a href="#exec-list">9.1 分页获取选项列表</a></li>
+<li class="toc-h3"><a href="#exec-active">9.2 获取启用选项（供 PDA 下拉）</a></li>
+<li class="toc-h3"><a href="#exec-create">9.3 新增选项</a></li>
+<li class="toc-h3"><a href="#exec-update">9.4 更新选项</a></li>
+<li class="toc-h3"><a href="#exec-delete">9.5 删除选项</a></li>
+<li class="toc-h2"><a href="#m-faultcat">10. 故障分类模块 /faultCategory</a></li>
+<li class="toc-h3"><a href="#fc-list">10.1 分页获取故障分类列表</a></li>
+<li class="toc-h3"><a href="#fc-byids">10.2 按 ID 列表批量获取</a></li>
+<li class="toc-h3"><a href="#fc-bymodel">10.3 按机型 ID 查询关联分类及报警明细</a></li>
+<li class="toc-h3"><a href="#fc-create">10.4 新增故障分类</a></li>
+<li class="toc-h3"><a href="#fc-update">10.5 更新故障分类</a></li>
+<li class="toc-h3"><a href="#fc-delete">10.6 删除故障分类</a></li>
+<li class="toc-h2"><a href="#m-machinemodel">11. 机型模块 /machineModel</a></li>
+<li class="toc-h3"><a href="#mm-list">11.1 分页获取机型列表</a></li>
+<li class="toc-h3"><a href="#mm-byids">11.2 按 ID 列表批量获取机型</a></li>
+<li class="toc-h2"><a href="#m-inspection">12. 点检基础数据模块（Onebe 只读）</a></li>
+<li class="toc-h3"><a href="#insp-qtype">12.1 问题类型列表</a></li>
+<li class="toc-h3"><a href="#insp-position">12.2 维修位置列表</a></li>
+<li class="toc-h3"><a href="#insp-content">12.3 维修内容列表</a></li>
+<li class="toc-h2"><a href="#m-sparepart">13. 备件模块 /sparepart</a></li>
+<li class="toc-h3"><a href="#sp-list">13.1 分页获取备件列表</a></li>
+<li class="toc-h3"><a href="#sp-listattr">13.2 分页获取备件列表（含 SOP 属性）</a></li>
+<li class="toc-h2"><a href="#m-sparepartattr">14. 备件属性模块 /sparepartAttr</a></li>
+<li class="toc-h3"><a href="#spa-list">14.1 分页获取备件属性列表</a></li>
+<li class="toc-h3"><a href="#spa-bysid">14.2 按备件 sId 获取属性</a></li>
+<li class="toc-h3"><a href="#spa-create">14.3 新增备件属性</a></li>
+<li class="toc-h3"><a href="#spa-update">14.4 更新备件属性</a></li>
+<li class="toc-h3"><a href="#spa-delete">14.5 删除备件属性</a></li>
+<li class="toc-h2"><a href="#m-equipment">15. 设备机型模块 /equipment</a></li>
+<li class="toc-h3"><a href="#eq-list">15.1 获取全部设备机型</a></li>
+<li class="toc-h2"><a href="#m-inspservice">16. 维修服务模块 /inspectionService</a></li>
+<li class="toc-h3"><a href="#is-replist">16.1 备件更换列表</a></li>
+<li class="toc-h3"><a href="#is-export">16.2 备件更换台账导出 Excel</a></li>
+<li class="toc-h3"><a href="#is-smodel">16.3 备件型号下拉</a></li>
+<li class="toc-h2"><a href="#m-other">17. 其它</a></li>
+<li class="toc-h3"><a href="#other-health">17.1 健康检查</a></li>
+<li class="toc-h3"><a href="#other-uploads">17.2 静态资源</a></li>
+</ul></nav>
+<main>
+<h1 id="overview">SOP 后端 API 接口文档</h1>
+<blockquote>基于 <code>internal/router</code>、<code>internal/api</code>、<code>internal/service</code> 与 <code>internal/model</code> 当前实现的全量梳理（共 63 个业务接口）。</blockquote>
+
+<h2>基础信息</h2>
+<ul>
+<li><strong>基础路径</strong>：<code>/api/v1</code>（健康检查与静态资源在根路径下，不属于 API 前缀）</li>
+<li><strong>数据格式</strong>：JSON（例外：<code>base/login</code> 兼容 <code>multipart/form-data</code>；<code>media/uploadMedia</code> 为 <code>multipart/form-data</code>）</li>
+<li><strong>认证方式</strong>：JWT Bearer Token，请求头 <code>Authorization: Bearer &lt;token&gt;</code>
+<ul>
+<li>除 <code>GET /health</code>、<code>POST /base/login</code>、<code>POST /base/appLogin</code> 与 <code>/uploads/*</code> 静态资源外，其余接口均需认证</li>
+<li><code>JWTAuth</code> 中间件同时兼容两类令牌：Web 登录签发的普通 JWT（有效期由配置决定）与 APP 端 <code>appLogin</code> 签发的永久 AppToken（<code>Claims.Type = "app"</code>）</li>
+<li>多数写接口额外挂载 <code>RequireActiveUser()</code>：按登录态反查 Onebe 用户信息，要求 <code>status == 1</code>（启用）才放行，否则返回 403</li>
+</ul>
+</li>
+<li><strong>数据库</strong>：SQL Server（GORM），三库：<code>SOPHub</code>（业务主库，读写）、<code>Onebe</code>（点检/维修老库，只读）、<code>Sparepart</code>（备件库，只读）</li>
+<li><strong>时间格式</strong>：<code>LocalTime</code> 统一输出 <code>YYYY-MM-DD HH:mm:ss</code>，零值输出空串 <code>""</code></li>
+<li><strong>URL 改写</strong>：挂载 <code>ResourceURL()</code> 的接口，出参将 <code>/uploads/...</code> 相对路径替换为完整 URL；入参将 <code>http(s)://host/uploads/...</code> 绝对地址剥回相对路径后入库（幂等）</li>
+</ul>
+
+<h2 id="common">通用响应格式</h2>
+<h3 id="common-envelope">统一响应信封</h3>
+<p>所有业务接口（除 <code>/health</code> 与 Excel 导出）均返回统一信封：</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+<ul>
+<li>成功：<code>code = 0</code>（HTTP 200），<code>data</code> 为各接口说明的业务数据</li>
+<li>无返回数据的成功响应（更新/删除类），<code>data</code> 固定为空对象 <code>{}</code></li>
+<li>业务失败（HTTP 状态码与业务码一致，<code>data</code> 为 <code>null</code>）：</li>
+</ul>
+<pre class="lang-json"><code>{ "code": 404, "data": null, "msg": "指南不存在" }</code></pre>
+<h3 id="common-errors">业务错误码</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>code / HTTP</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>成功（HTTP 200）</td></tr>
+<tr><td>7</td><td>通用失败（HTTP 200）。参数绑定失败统一返回泛化提示「请求参数错误」（真实原因仅记服务端日志，不泄露校验器内部细节）；未知错误返回「服务器内部错误」</td></tr>
+<tr><td>400</td><td>参数错误（业务校验失败，如「回复内容不能为空」「单个指南步骤数量不能超过 100」）</td></tr>
+<tr><td>401</td><td>未认证 / 认证失败（token 缺失、过期、无效；appLogin 的 appKey 不匹配）</td></tr>
+<tr><td>403</td><td>无权限（如用户已被禁用）</td></tr>
+<tr><td>404</td><td>资源不存在</td></tr>
+<tr><td>409</td><td>冲突（如菜单名称已存在、指南/执行说明选项已被引用、备件已配置属性）</td></tr>
+<tr><td>500</td><td>服务器内部错误（code=7，未知错误回退，原始错误仅记服务端日志）</td></tr>
+</tbody>
+</table></div>
+<h3 id="common-page">分页信封</h3>
+<p>分页列表接口的 <code>data</code> 统一为如下结构（下文以「<strong>分页信封</strong>」指代，仅 <code>data.list</code> 项结构因接口而异）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>list</code></td><td>array</td><td>当前页数据列表，项结构见各接口「响应数据」表</td></tr>
+<tr><td><code>total</code></td><td>int64</td><td>符合条件的总条数</td></tr>
+<tr><td><code>page</code></td><td>int</td><td>当前页码</td></tr>
+<tr><td><code>pageSize</code></td><td>int</td><td>当前页大小（请求中的 <code>limit</code> / <code>pageSize</code> 映射到此字段返回）</td></tr>
+<tr><td><code>pagination</code></td><td>object</td><td>冗余分页对象：<code>page</code> / <code>limit</code> / <code>total</code>，与上面三个字段一致</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [],
+    "total": 0,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 0 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+<blockquote>分页参数归一化：<code>page &lt;= 0</code> 取 1；<code>limit</code>/<code>pageSize</code> 缺省取 10，最大 100（各列表接口统一）。仅 Excel 导出接口内部以 <code>pageSize=100000</code> 拉取全量。</blockquote>
+<h3 id="common-base">通用基础字段（BaseModel）</h3>
+<p>多数 SOPHub 表的响应对象都包含以下字段（由 <code>model.BaseModel</code> 提供），下文各响应表中以「（BaseModel）」简写引用：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td>主键</td></tr>
+<tr><td><code>createTime</code></td><td>string</td><td>创建时间（<code>YYYY-MM-DD HH:mm:ss</code>，自动填充）</td></tr>
+<tr><td><code>updateTime</code></td><td>string</td><td>更新时间（<code>YYYY-MM-DD HH:mm:ss</code>，自动填充）</td></tr>
+</tbody>
+</table></div>
+<h3 id="common-mw">权限与中间件图例</h3>
+<p>各接口标题下方以徽章标注该接口挂载的中间件：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>徽章</th><th>中间件</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><span class="badge badge-free">免认证</span></td><td>-</td><td>无需携带 token</td></tr>
+<tr><td><span class="badge badge-jwt">需登录</span></td><td><code>JWTAuth()</code></td><td>校验 Bearer Token，兼容普通 JWT 与永久 AppToken；失败 401</td></tr>
+<tr><td><span class="badge badge-active">需启用用户</span></td><td><code>RequireActiveUser()</code></td><td>反查 Onebe 确认用户存在且 <code>status=1</code>（启用）；明确不存在/禁用时 403，Onebe 基础设施故障时放行</td></tr>
+<tr><td><span class="badge badge-note">multipart</span></td><td>-</td><td>请求体为 <code>multipart/form-data</code>（文件上传）</td></tr>
+<tr><td><span class="badge badge-note">免超时</span></td><td><code>NoTimeout()</code></td><td>豁免服务器级读/写超时（大文件上传）</td></tr>
+<tr><td><span class="badge badge-note">URL 改写</span></td><td><code>ResourceURL()</code></td><td>出参相对路径补全为完整 URL，入参绝对地址剥回相对路径</td></tr>
+</tbody>
+</table></div>
+<blockquote>批量 ID 类接口约定：请求字段 <code>ids</code> 校验 <code>required,min=1,max=1000</code>（上限对齐 SQL Server 单条语句参数约 2100）；<code>user/getUsersByIDs</code> 是唯一未限制数量的批量接口（服务端按 1000 一批分片查询）。</blockquote>
+<h2 id="m-base">1. 基础模块 <code>/base</code></h2>
+
+<h3 id="base-login">1.1 用户登录 — <code>POST /base/login</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-free">免认证</span></div>
+<p>支持 <code>application/json</code> 与 <code>multipart/form-data</code> 两种请求体；两种格式下字段名均为 <code>name</code> / <code>password</code>。bcrypt 校验密码，「用户不存在」伪装成「用户名或密码错误」（防枚举）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td>string</td><td class="req-yes">是</td><td>用户名</td></tr>
+<tr><td><code>password</code></td><td>string</td><td class="req-yes">是</td><td>密码</td></tr>
+</tbody>
+</table></div>
+<blockquote class="warn">测试模式下（配置 <code>server.skipPasswordCheck = true</code>）跳过密码校验，任意密码均可登录。用户 info 缺失或 <code>status != 1</code> 时返回 403「用户已被禁用」。</blockquote>
+<pre class="lang-json"><code>{
+  "name": "admin",
+  "password": "123456"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>user</code></td><td>object</td><td>用户登录记录（<code>nxp_user</code>，password 不返回）</td></tr>
+<tr><td><code>user.id</code></td><td>uint</td><td>用户主键（= JWT UserID）</td></tr>
+<tr><td><code>user.userId</code></td><td>int</td><td>业务用户 ID</td></tr>
+<tr><td><code>user.name</code></td><td>string</td><td>用户名</td></tr>
+<tr><td><code>user.createTime</code></td><td>string</td><td>创建时间（<code>YYYY-MM-DD HH:mm:ss</code>）</td></tr>
+<tr><td><code>token</code></td><td>string</td><td>JWT 令牌，后续请求作为 Bearer Token 携带</td></tr>
+<tr><td><code>expire_at</code></td><td>int64</td><td>令牌过期时间戳（<strong>毫秒</strong>级）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "user": {
+      "id": 1,
+      "userId": 1,
+      "name": "admin",
+      "createTime": "2026-01-01 00:00:00"
+    },
+    "token": "&lt;jwt&gt;",
+    "expire_at": 1760000000000
+  },
+  "msg": "登录成功"
+}</code></pre>
+
+<h3 id="base-applogin">1.2 APP 端免密码登录 — <code>POST /base/appLogin</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-free">免认证</span></div>
+<p>仅支持 JSON 请求体。APP 端以固定 <code>appKey</code>（配置 <code>server.appTokenKey</code>）换取永久 AppToken，与用户密码无关。<code>appKey</code> 采用恒定时间比较；反查 Onebe 确认用户存在且启用（禁用/幽灵账号拒绝签发）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>userId</code></td><td>uint</td><td class="req-yes">是</td><td>用户 ID（<code>nxp_user.id</code>）</td></tr>
+<tr><td><code>appKey</code></td><td>string</td><td class="req-yes">是</td><td>APP 固定密钥，不匹配返回 401</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "userId": 3,
+  "appKey": "your-app-key"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>user</code></td><td>object</td><td>用户登录记录，子字段同 1.1（id / userId / name / createTime）</td></tr>
+<tr><td><code>token</code></td><td>string</td><td>永久 AppToken（<code>Claims.Type = "app"</code>，有效期约 100 年近似永久，可通过更换 appKey 全局吊销），验签路径与普通 JWT 一致，可直接访问其余需认证接口</td></tr>
+<tr><td><code>expire_at</code></td><td>int64</td><td>固定返回 <code>0</code> 作占位（token 不设实际过期）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "user": { "id": 3, "userId": 3, "name": "zhangsan", "createTime": "2026-01-01 00:00:00" },
+    "token": "&lt;app-token&gt;",
+    "expire_at": 0
+  },
+  "msg": "登录成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-user">2. 用户模块 <code>/user</code></h2>
+<p>全部需登录。用户数据来自 Onebe 只读库，本模块仅提供查询（账号增删改、密码、角色权限等由 Onebe 侧维护，不在本服务暴露）。</p>
+
+<h3 id="user-getuserlist">2.1 分页获取用户列表 — <code>POST /user/getUserList</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取用户列表（<code>nxp_user</code> + <code>nxp_user_info</code> 组合）。排序字段走白名单防注入，非法 <code>orderKey</code> 回退默认排序 <code>id DESC</code>。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>pageSize</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字模糊搜索</td></tr>
+<tr><td><code>orderKey</code></td><td>string</td><td class="req-no">否</td><td>排序字段白名单（<code>id</code> / <code>create_time</code> / <code>name</code> / <code>chinese_name</code> / <code>tel</code>），非法值回退 <code>id DESC</code></td></tr>
+<tr><td><code>desc</code></td><td>bool</td><td class="req-no">否</td><td>是否倒序</td></tr>
+<tr><td><code>name</code></td><td>string</td><td class="req-no">否</td><td>用户名精确筛选</td></tr>
+<tr><td><code>tel</code></td><td>string</td><td class="req-no">否</td><td>手机号筛选</td></tr>
+<tr><td><code>email</code></td><td>string</td><td class="req-no">否</td><td>邮箱筛选</td></tr>
+<tr><td><code>sfcNumber</code></td><td>string</td><td class="req-no">否</td><td>SFC 账号筛选</td></tr>
+<tr><td><code>fslNumber</code></td><td>string</td><td class="req-no">否</td><td>FSL 工号筛选</td></tr>
+<tr><td><code>departmentNumber</code></td><td>string</td><td class="req-no">否</td><td>部门号筛选</td></tr>
+<tr><td><code>roleId</code></td><td>int</td><td class="req-no">否</td><td>角色 ID 筛选</td></tr>
+<tr><td><code>position</code></td><td>int</td><td class="req-no">否</td><td>职务筛选</td></tr>
+<tr><td><code>status</code></td><td>int8</td><td class="req-no">否</td><td>状态筛选：1 启用 / 2 禁用</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "pageSize": 10,
+  "keyword": "张",
+  "orderKey": "create_time",
+  "desc": true,
+  "status": 1
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（NxpUserDTO，<code>nxp_user</code> + <code>nxp_user_info</code> 组合）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>int</td><td>用户 ID（= <code>nxp_user.id</code>）</td></tr>
+<tr><td><code>name</code></td><td>string</td><td>用户名</td></tr>
+<tr><td><code>createTime</code></td><td>string</td><td>创建时间，格式 <code>2006-01-02 15:04:05</code>；零值时为 <code>null</code></td></tr>
+<tr><td><code>roleId</code></td><td>int</td><td>角色 ID；info 缺失时为 <code>null</code></td></tr>
+<tr><td><code>status</code></td><td>int8</td><td>状态：1 启用 / 2 禁用；info 缺失（幽灵账号）兜底为 2</td></tr>
+<tr><td><code>tel</code></td><td>string</td><td>手机号</td></tr>
+<tr><td><code>chineseName</code></td><td>string</td><td>中文名称</td></tr>
+<tr><td><code>englishName</code></td><td>string</td><td>英文名称</td></tr>
+<tr><td><code>sex</code></td><td>int8</td><td>性别：1 男 / 2 女</td></tr>
+<tr><td><code>email</code></td><td>string</td><td>邮箱</td></tr>
+<tr><td><code>position</code></td><td>int</td><td>职务 ID</td></tr>
+<tr><td><code>shift</code></td><td>int</td><td>班别</td></tr>
+<tr><td><code>sfcNumber</code></td><td>string</td><td>SFC 账号</td></tr>
+<tr><td><code>fslNumber</code></td><td>string</td><td>FSL 工号</td></tr>
+<tr><td><code>departmentNumber</code></td><td>string</td><td>部门号</td></tr>
+<tr><td><code>pid</code></td><td>string</td><td>PID 唯一标识</td></tr>
+<tr><td><code>section</code></td><td>string</td><td>所属分部</td></tr>
+<tr><td><code>wbiCode</code></td><td>string</td><td>WBI code</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 3,
+        "name": "zhangsan",
+        "createTime": "2026-01-01 00:00:00",
+        "roleId": 1,
+        "status": 1,
+        "tel": "13800000000",
+        "chineseName": "张三",
+        "englishName": "Zhang San",
+        "sex": 1,
+        "email": "a@b.com",
+        "position": 4,
+        "shift": 1,
+        "sfcNumber": "SFC001",
+        "fslNumber": "FSL001",
+        "departmentNumber": "D01",
+        "pid": "P001",
+        "section": "S1",
+        "wbiCode": "WBI"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="user-getusersbyids">2.2 按 ID 列表批量获取用户 — <code>POST /user/getUsersByIDs</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>按 ID 列表批量获取用户（用于提问等记录反查提出工程师）。服务端按 1000 个 ID 一批分片查询（对齐 SQL Server 单条语句参数上限约 2100）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>ids</code></td><td>[]uint</td><td class="req-no">否</td><td>用户 ID 列表（本接口无 binding 限制，空列表返回空数组）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "ids": [1, 3, 5]
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为<strong>数组</strong>（不分页、无分页信封），项结构同 2.1 的 NxpUserDTO 表。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": [
+    {
+      "id": 3,
+      "name": "zhangsan",
+      "createTime": "2026-01-01 00:00:00",
+      "roleId": 1,
+      "status": 1,
+      "chineseName": "张三",
+      "...": "其余字段同 2.1"
+    }
+  ],
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="user-getuserinfo">2.3 获取自身信息 — <code>GET /user/getUserInfo</code></h3>
+<div class="api-line"><span class="method method-get">GET</span><span class="badge badge-jwt">需登录</span></div>
+<p>获取当前登录用户信息。用户身份取自 JWT Claims，无需请求参数。返回扁平结构：将 <code>nxp_user</code> 与 <code>nxp_user_info</code> 的全部字段铺到 <code>userInfo</code> 顶层，同时保留 <code>User</code> 子结构与字符串角色 <code>role</code>。</p>
+<p class="sec-title">请求参数</p>
+<p>无（用户身份取自 JWT）。</p>
+<p class="sec-title resp">响应数据</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>userInfo</code></td><td>object</td><td>当前用户完整信息</td></tr>
+<tr><td><code>userInfo.id</code></td><td>uint</td><td>用户主键（= JWT UserID）</td></tr>
+<tr><td><code>userInfo.userId</code></td><td>int</td><td>业务用户 ID</td></tr>
+<tr><td><code>userInfo.name</code></td><td>string</td><td>用户名</td></tr>
+<tr><td><code>userInfo.username</code></td><td>string</td><td>同 name（前端兼容键）</td></tr>
+<tr><td><code>userInfo.employeeId</code></td><td>int</td><td>同 userId</td></tr>
+<tr><td><code>userInfo.role</code></td><td>string</td><td>角色：用户名为 admin / sopadmin（大小写不敏感）→ <code>"ADMIN"</code>，其余 → <code>"JUNIOR_ENGINEER"</code></td></tr>
+<tr><td><code>userInfo.createTime</code></td><td>string</td><td>创建时间，格式 <code>2006-01-02 15:04:05</code></td></tr>
+<tr><td><code>userInfo.roleId</code></td><td>int</td><td>角色 ID（以下 info 段字段均来自 <code>nxp_user_info</code>，<strong>info 为 nil 时整段缺失</strong>）</td></tr>
+<tr><td><code>userInfo.status</code></td><td>int8</td><td>状态：1 启用 / 2 禁用</td></tr>
+<tr><td><code>userInfo.leaderUid</code></td><td>int</td><td>直属经理用户 ID</td></tr>
+<tr><td><code>userInfo.pid</code></td><td>string</td><td>PID 唯一标识</td></tr>
+<tr><td><code>userInfo.phone</code></td><td>string</td><td>手机号（注意键名是 <code>phone</code>，不是 <code>tel</code>）</td></tr>
+<tr><td><code>userInfo.chineseName</code></td><td>string</td><td>中文名称</td></tr>
+<tr><td><code>userInfo.englishName</code></td><td>string</td><td>英文名称</td></tr>
+<tr><td><code>userInfo.sex</code></td><td>int8</td><td>性别：1 男 / 2 女</td></tr>
+<tr><td><code>userInfo.email</code></td><td>string</td><td>邮箱</td></tr>
+<tr><td><code>userInfo.position</code></td><td>int</td><td>职务 ID</td></tr>
+<tr><td><code>userInfo.shift</code></td><td>int</td><td>班别</td></tr>
+<tr><td><code>userInfo.area</code></td><td>string</td><td>区域</td></tr>
+<tr><td><code>userInfo.stationId</code></td><td>int</td><td>站别主键 ID</td></tr>
+<tr><td><code>userInfo.sfcNumber</code></td><td>string</td><td>SFC 账号</td></tr>
+<tr><td><code>userInfo.fslNumber</code></td><td>string</td><td>FSL 工号</td></tr>
+<tr><td><code>userInfo.mealCardCode</code></td><td>string</td><td>餐卡后五位</td></tr>
+<tr><td><code>userInfo.wbiCode</code></td><td>string</td><td>WBI code</td></tr>
+<tr><td><code>userInfo.badgeCode</code></td><td>string</td><td>识别证码</td></tr>
+<tr><td><code>userInfo.skill</code></td><td>int</td><td>多技能工位</td></tr>
+<tr><td><code>userInfo.department</code></td><td>string</td><td>部门号（注意键名是 <code>department</code>，不是 <code>departmentNumber</code>）</td></tr>
+<tr><td><code>userInfo.section</code></td><td>string</td><td>所属分部</td></tr>
+<tr><td><code>userInfo.gembaRole</code></td><td>int</td><td>gemba 权限</td></tr>
+<tr><td><code>userInfo.team</code></td><td>int</td><td>gemba 小组</td></tr>
+<tr><td><code>userInfo.shoeType</code></td><td>int</td><td>洗鞋机校验：1 需要 / 2 不需要</td></tr>
+<tr><td><code>userInfo.newArea</code></td><td>string</td><td>区域（新版枚举）</td></tr>
+<tr><td><code>userInfo.sectionIr</code></td><td>int</td><td>另外分配的所属分部</td></tr>
+<tr><td><code>userInfo.User</code></td><td>object</td><td>子结构 <code>{ id, userId, name, createTime }</code>，兼容前端 <code>u.User.id</code> / <code>u.User.name</code> 访问</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "userInfo": {
+      "id": 1,
+      "userId": 1,
+      "name": "admin",
+      "username": "admin",
+      "employeeId": 1,
+      "role": "ADMIN",
+      "createTime": "2026-01-01 00:00:00",
+      "roleId": 1,
+      "status": 1,
+      "leaderUid": 2,
+      "pid": "P001",
+      "phone": "13800000000",
+      "chineseName": "张三",
+      "englishName": "Zhang San",
+      "sex": 1,
+      "email": "a@b.com",
+      "position": 4,
+      "shift": 1,
+      "area": "A1",
+      "stationId": 5,
+      "sfcNumber": "SFC001",
+      "fslNumber": "FSL001",
+      "mealCardCode": "12345",
+      "wbiCode": "WBI",
+      "badgeCode": "B001",
+      "skill": 1,
+      "department": "D01",
+      "section": "S1",
+      "gembaRole": 1,
+      "team": 2,
+      "shoeType": 1,
+      "newArea": "NA1",
+      "sectionIr": 3,
+      "User": {
+        "id": 1,
+        "userId": 1,
+        "name": "admin",
+        "createTime": "2026-01-01 00:00:00"
+      }
+    }
+  },
+  "msg": "获取成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-guide">3. 指南模块 <code>/guides</code></h2>
+<p>全部需登录。<code>save</code> / <code>status</code> / <code>delete</code> 需用户处于启用状态（<span class="badge badge-active">需启用用户</span>）；APP 读取接口额外挂载 <span class="badge badge-note">URL 改写</span>。</p>
+
+<h3 id="guide-list">3.1 分页获取指南列表 — <code>POST /guides/list</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取指南列表（含步骤，Preload Steps）。<code>faultCode</code> 模糊匹配；<code>faultCategoryId &gt; 0</code> 精确；<code>keyword</code> 也按 <code>fault_code LIKE</code>。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>faultCode</code></td><td>string</td><td class="req-no">否</td><td>按故障码模糊搜索</td></tr>
+<tr><td><code>faultCategoryId</code></td><td>uint</td><td class="req-no">否</td><td>按故障分类 ID 精确筛选（0 不筛）</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字模糊搜索（fault_code）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "faultCode": "E-101",
+  "faultCategoryId": 2,
+  "keyword": ""
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（GuideWithLabel = NxpSopGuide 全字段 + 展示字段）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（BaseModel）</code></td><td>-</td><td>id / createTime / updateTime</td></tr>
+<tr><td><code>machineModelId</code></td><td>uint</td><td>关联机型（<code>nxp_machine_model</code>）</td></tr>
+<tr><td><code>faultCode</code></td><td>string</td><td>故障码</td></tr>
+<tr><td><code>faultCategoryId</code></td><td>uint</td><td>关联故障分类（<code>nxp_sop_fault_category</code>）</td></tr>
+<tr><td><code>questionTypeId</code></td><td>uint</td><td>关联问题类型（<code>nxp_inspection_question_type</code>）</td></tr>
+<tr><td><code>repairPositionId</code></td><td>uint</td><td>关联维修位置（<code>nxp_inspection_position</code>）</td></tr>
+<tr><td><code>repairContentId</code></td><td>uint</td><td>关联维修内容（<code>nxp_inspection_content</code>）</td></tr>
+<tr><td><code>faultCodeDescription</code></td><td>string</td><td>报警代码描述</td></tr>
+<tr><td><code>enabled</code></td><td>bool</td><td>是否启用（发布状态）</td></tr>
+<tr><td><code>totalOccurrenceCount</code></td><td>int64</td><td>总发生次数</td></tr>
+<tr><td><code>faultCategoryLabel</code></td><td>string</td><td>故障分类文案（联查 <code>label</code> 填充，仅列表展示；faultCategoryId 为 0 时为空串）</td></tr>
+<tr><td><code>steps</code></td><td>[]Step</td><td>步骤列表，项结构见下表</td></tr>
+</tbody>
+</table></div>
+<p><strong>steps 项结构（NxpSopGuideStep，表 <code>nxp_sop_guide_step</code>）</strong>：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（BaseModel）</code></td><td>-</td><td>id / createTime / updateTime</td></tr>
+<tr><td><code>guideID</code></td><td>uint</td><td>关联 Guide ID（注意键名为大写 <code>guideID</code>）</td></tr>
+<tr><td><code>number</code></td><td>int</td><td>步骤序号</td></tr>
+<tr><td><code>stage</code></td><td>string</td><td>阶段</td></tr>
+<tr><td><code>title</code></td><td>string</td><td>步骤标题</td></tr>
+<tr><td><code>description</code></td><td>string</td><td>步骤描述</td></tr>
+<tr><td><code>instruction</code></td><td>string</td><td>操作说明</td></tr>
+<tr><td><code>imageUrls</code></td><td>[]string</td><td>多图片 URL 列表</td></tr>
+<tr><td><code>videoUrls</code></td><td>[]string</td><td>多视频 URL 列表</td></tr>
+<tr><td><code>pdfUrls</code></td><td>[]string</td><td>多 PDF URL 列表</td></tr>
+<tr><td><code>judgmentMethod</code></td><td>string</td><td>判断方法</td></tr>
+<tr><td><code>expertAdvice</code></td><td>string</td><td>专家建议</td></tr>
+<tr><td><code>safetyWarning</code></td><td>string</td><td>安全提示</td></tr>
+<tr><td><code>enabled</code></td><td>bool</td><td>是否启用（可为 <code>null</code>）</td></tr>
+<tr><td><code>historyRepairCount</code></td><td>int</td><td>历史维修次数</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "createTime": "2026-09-01 00:00:00",
+        "updateTime": "2026-09-06 00:00:00",
+        "machineModelId": 44,
+        "faultCode": "E-101",
+        "faultCategoryId": 2,
+        "questionTypeId": 3,
+        "repairPositionId": 10,
+        "repairContentId": 20,
+        "faultCodeDescription": "真空报警",
+        "enabled": true,
+        "totalOccurrenceCount": 15,
+        "faultCategoryLabel": "传感器污染",
+        "steps": [
+          {
+            "id": 11,
+            "createTime": "2026-09-01 00:00:00",
+            "updateTime": "2026-09-01 00:00:00",
+            "guideID": 1,
+            "number": 1,
+            "stage": "检查",
+            "title": "目视检查",
+            "description": "检查真空管路外观",
+            "instruction": "沿管路逐段目视检查",
+            "imageUrls": ["/uploads/media/a.png"],
+            "videoUrls": [],
+            "pdfUrls": [],
+            "judgmentMethod": "观察有无破损脱落",
+            "expertAdvice": "发现破损立即更换",
+            "safetyWarning": "断电操作",
+            "enabled": true,
+            "historyRepairCount": 3
+          }
+        ]
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="guide-save">3.2 保存指南 — <code>POST /guides/save</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>保存指南（创建或更新）。请求体即 NxpSopGuide 全字段（无 binding 校验，业务校验在 service 层）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-no">否</td><td>指南 ID；0 新建，非 0 更新（更新时指南不存在返回 404）</td></tr>
+<tr><td><code>machineModelId</code></td><td>uint</td><td class="req-no">否</td><td>关联机型</td></tr>
+<tr><td><code>faultCode</code></td><td>string</td><td class="req-no">否</td><td>故障码</td></tr>
+<tr><td><code>faultCategoryId</code></td><td>uint</td><td class="req-no">否</td><td>关联故障分类</td></tr>
+<tr><td><code>questionTypeId</code></td><td>uint</td><td class="req-no">否</td><td>关联问题类型</td></tr>
+<tr><td><code>repairPositionId</code></td><td>uint</td><td class="req-no">否</td><td>关联维修位置</td></tr>
+<tr><td><code>repairContentId</code></td><td>uint</td><td class="req-no">否</td><td>关联维修内容</td></tr>
+<tr><td><code>faultCodeDescription</code></td><td>string</td><td class="req-no">否</td><td>报警代码描述</td></tr>
+<tr><td><code>enabled</code></td><td>bool</td><td class="req-no">否</td><td>是否启用（发布状态）</td></tr>
+<tr><td><code>totalOccurrenceCount</code></td><td>int64</td><td class="req-no">否</td><td>总发生次数</td></tr>
+<tr><td><code>steps</code></td><td>[]Step</td><td class="req-no">否</td><td>步骤列表，项结构同 3.1 的 steps 表；数量上限 100，每项 <code>title</code> 必填且 ≤ 200 字</td></tr>
+</tbody>
+</table></div>
+<blockquote>更新时步骤按 <code>id</code> diff 增删改：无 <code>id</code>（或为 0）的步骤新建，既有步骤保留主键更新，请求中缺失的既有步骤删除；新建指南时步骤携带的临时 <code>id</code> 会被归零。</blockquote>
+<pre class="lang-json"><code>{
+  "id": 0,
+  "machineModelId": 44,
+  "faultCode": "E-101",
+  "faultCategoryId": 2,
+  "questionTypeId": 3,
+  "repairPositionId": 10,
+  "repairContentId": 20,
+  "faultCodeDescription": "真空报警",
+  "enabled": false,
+  "totalOccurrenceCount": 0,
+  "steps": [
+    {
+      "number": 1,
+      "stage": "检查",
+      "title": "目视检查",
+      "description": "检查真空管路外观",
+      "instruction": "沿管路逐段目视检查",
+      "imageUrls": ["/uploads/media/a.png"],
+      "videoUrls": [],
+      "pdfUrls": [],
+      "judgmentMethod": "观察有无破损脱落",
+      "expertAdvice": "发现破损立即更换",
+      "safetyWarning": "断电操作",
+      "enabled": true
+    }
+  ]
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>无业务数据（<code>data</code> 为空对象）。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="guide-status">3.3 更新指南启用状态 — <code>POST /guides/status</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>更新指南发布状态。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-yes">是</td><td>指南 ID</td></tr>
+<tr><td><code>enabled</code></td><td>bool</td><td class="req-no">否</td><td>是否启用</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 1,
+  "enabled": true
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="guide-delete">3.4 删除指南 — <code>POST /guides/delete</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>删除指南（含其步骤）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-yes">是</td><td>指南 ID</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 1
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+<blockquote class="warn">被提问或维修记录引用时返回 409「该指南已被提问或维修记录引用，不能删除」。</blockquote>
+
+<h3 id="guide-sample">3.5 按设备 ID 列表分页获取指南精简视图 — <code>POST /guides/getGuideSampleByMachineModelIds</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-note">URL 改写</span></div>
+<p>入参 <code>ids</code> 为设备 id（即 <code>nxp_facility.id</code>）；因 app 前端不方便修改，仅后端调整逻辑：经 <code>nxp_facility.model</code> 中转后查询指南（仅返回启用状态 <code>enabled=true</code>，按 id 倒序）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>ids</code></td><td>[]uint</td><td class="req-yes">是</td><td>设备 ID 列表（<code>nxp_facility.id</code>），1~1000 个</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "ids": [101, 102]
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（GuideSample，不含 steps）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（BaseModel）</code></td><td>-</td><td>id / createTime / updateTime</td></tr>
+<tr><td><code>machineModelId</code></td><td>uint</td><td>关联机型</td></tr>
+<tr><td><code>faultCode</code></td><td>string</td><td>故障码</td></tr>
+<tr><td><code>faultCategoryId</code></td><td>uint</td><td>关联故障分类</td></tr>
+<tr><td><code>faultCategoryLabel</code></td><td>string</td><td>故障分类文案</td></tr>
+<tr><td><code>questionTypeId</code></td><td>uint</td><td>关联问题类型</td></tr>
+<tr><td><code>repairPositionId</code></td><td>uint</td><td>关联维修位置</td></tr>
+<tr><td><code>repairContentId</code></td><td>uint</td><td>关联维修内容</td></tr>
+<tr><td><code>faultCodeDescription</code></td><td>string</td><td>报警代码描述</td></tr>
+<tr><td><code>enabled</code></td><td>bool</td><td>是否启用（恒为 true）</td></tr>
+<tr><td><code>totalOccurrenceCount</code></td><td>int64</td><td>总发生次数</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "createTime": "2026-09-01 00:00:00",
+        "updateTime": "2026-09-06 00:00:00",
+        "machineModelId": 44,
+        "faultCode": "E-101",
+        "faultCategoryId": 2,
+        "faultCategoryLabel": "传感器污染",
+        "questionTypeId": 3,
+        "repairPositionId": 10,
+        "repairContentId": 20,
+        "faultCodeDescription": "真空报警",
+        "enabled": true,
+        "totalOccurrenceCount": 15
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="guide-steps">3.6 按故障码获取对应步骤 — <code>POST /guides/getStepsByFaultCode</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-note">URL 改写</span></div>
+<p>按故障码获取对应指南步骤。<code>faultCode</code> 为空时直接返回空数组。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>faultCode</code></td><td>string</td><td class="req-yes">是</td><td>故障码</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "faultCode": "E-101"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<blockquote class="warn"><code>data</code> 直接为<strong>扁平步骤数组</strong>（NxpSopGuideStep[]），<strong>不包 list/分页信封</strong>。步骤项结构同 3.1 的 steps 表。</blockquote>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": [
+    {
+      "id": 11,
+      "createTime": "2026-09-01 00:00:00",
+      "updateTime": "2026-09-01 00:00:00",
+      "guideID": 1,
+      "number": 1,
+      "stage": "检查",
+      "title": "目视检查",
+      "description": "检查真空管路外观",
+      "instruction": "沿管路逐段目视检查",
+      "imageUrls": ["/uploads/media/a.png"],
+      "videoUrls": [],
+      "pdfUrls": [],
+      "judgmentMethod": "观察有无破损脱落",
+      "expertAdvice": "发现破损立即更换",
+      "safetyWarning": "断电操作",
+      "enabled": true,
+      "historyRepairCount": 3
+    }
+  ],
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="guide-byids">3.7 按指南 ID 列表分页获取指南 — <code>POST /guides/getGuideByIds</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-note">URL 改写</span></div>
+<p>按指南 ID 列表分页获取指南（含步骤）。<code>ids</code> 上限 1000：对齐 SQL Server 单条语句参数上限约 2100。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>ids</code></td><td>[]uint</td><td class="req-yes">是</td><td>指南 ID 列表，1~1000 个</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "ids": [1, 2, 3]
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构同 3.1（GuideWithLabel，含 steps）。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      { "id": 1, "faultCode": "E-101", "...": "结构同 3.1" }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-facility">4. 设备模块 <code>/facility</code></h2>
+<p>全部需登录。</p>
+
+<h3 id="facility-list">4.1 分页获取设备列表 — <code>POST /facility/list</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取设备（设施）列表。<code>keyword</code> 模糊匹配 <code>name / number / model / serial_no</code>，按 id 倒序。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字，模糊匹配名称 / 编号 / 机型 / 序列号</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "keyword": "WF"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（NxpFacility，表 <code>nxp_facility</code>；时间字段为 int/unix 秒，未用 BaseModel）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td>主键</td></tr>
+<tr><td><code>name</code></td><td>string</td><td>设备名称</td></tr>
+<tr><td><code>number</code></td><td>string</td><td>设备编号</td></tr>
+<tr><td><code>createUser</code></td><td>int</td><td>创建人</td></tr>
+<tr><td><code>model</code></td><td>string</td><td>机型（字符串形态的 machine_model_id）</td></tr>
+<tr><td><code>area</code></td><td>int</td><td>区域</td></tr>
+<tr><td><code>shift</code></td><td>int</td><td>班别</td></tr>
+<tr><td><code>serialNo</code></td><td>string</td><td>序列号</td></tr>
+<tr><td><code>vendorId</code></td><td>int</td><td>供应商 ID</td></tr>
+<tr><td><code>assetNo</code></td><td>string</td><td>资产编号</td></tr>
+<tr><td><code>buyOffDate</code></td><td>int</td><td>BuyOff 日期（unix 秒）</td></tr>
+<tr><td><code>cbaPassDate</code></td><td>int</td><td>CBA 通过日期（unix 秒）</td></tr>
+<tr><td><code>headUser</code></td><td>int</td><td>负责人</td></tr>
+<tr><td><code>status</code></td><td>int</td><td>状态</td></tr>
+<tr><td><code>isOk</code></td><td>int</td><td>是否正常</td></tr>
+<tr><td><code>file</code></td><td>string</td><td>附件</td></tr>
+<tr><td><code>createTime</code></td><td>int</td><td>创建时间（unix 秒）</td></tr>
+<tr><td><code>updateTime</code></td><td>int</td><td>更新时间（unix 秒）</td></tr>
+<tr><td><code>deleteTime</code></td><td>int</td><td>删除时间（unix 秒）</td></tr>
+<tr><td><code>process</code></td><td>string</td><td>工艺</td></tr>
+<tr><td><code>relevantPeople</code></td><td>string</td><td>相关人员</td></tr>
+<tr><td><code>inspectionStatus</code></td><td>int</td><td>点检状态</td></tr>
+<tr><td><code>reviewUser</code></td><td>int</td><td>审核人</td></tr>
+<tr><td><code>floor</code></td><td>int</td><td>楼层</td></tr>
+<tr><td><code>remark</code></td><td>string</td><td>备注</td></tr>
+<tr><td><code>ip</code></td><td>string</td><td>IP 地址</td></tr>
+<tr><td><code>isReplace</code></td><td>int</td><td>是否替换</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 101,
+        "name": "WF-01",
+        "number": "F-2026-001",
+        "createUser": 1,
+        "model": "44",
+        "area": 1,
+        "shift": 1,
+        "serialNo": "SN001",
+        "vendorId": 2,
+        "assetNo": "AST-001",
+        "buyOffDate": 1760000000,
+        "cbaPassDate": 1760000000,
+        "headUser": 3,
+        "status": 1,
+        "isOk": 1,
+        "file": "",
+        "createTime": 1760000000,
+        "updateTime": 1760000000,
+        "deleteTime": 0,
+        "process": "P1",
+        "relevantPeople": "",
+        "inspectionStatus": 0,
+        "reviewUser": 0,
+        "floor": 2,
+        "remark": "",
+        "ip": "10.0.0.1",
+        "isReplace": 0
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="facility-byids">4.2 按 ID 列表批量获取设备 — <code>POST /facility/getFacilitiesByIDs</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>按 ID 列表批量获取设备。<code>max=1000</code>：对齐 SQL Server 单条语句参数上限约 2100，避免超限报错（与 GetUsersByIDs 分片约定一致）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>ids</code></td><td>[]uint</td><td class="req-yes">是</td><td>设备 ID 列表，1~1000 个</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "ids": [101, 102]
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为<strong>数组</strong>（不分页），项结构同 4.1 的 NxpFacility 表。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": [
+    { "id": 101, "name": "WF-01", "model": "44", "...": "其余字段同 4.1" }
+  ],
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-inquiry">5. 提问模块 <code>/inquiries</code></h2>
+<p>全部需登录。<code>create</code> / <code>reply</code> 需用户处于启用状态（<span class="badge badge-active">需启用用户</span>）。</p>
+
+<h3 id="inquiry-list">5.1 分页获取提问列表 — <code>POST /inquiries/list</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取提问列表。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>faultCode</code></td><td>string</td><td class="req-no">否</td><td>故障码筛选，为空不筛</td></tr>
+<tr><td><code>status</code></td><td>string</td><td class="req-no">否</td><td>状态筛选，为空不筛（如 <code>pending</code> / <code>resolved</code>）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "faultCode": "E-101",
+  "status": "pending"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（NxpSopInquiry，表 <code>nxp_sop_inquiry</code>）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（BaseModel）</code></td><td>-</td><td>id / createTime / updateTime</td></tr>
+<tr><td><code>engineerId</code></td><td>uint</td><td>提出工程师用户 ID</td></tr>
+<tr><td><code>guideId</code></td><td>uint</td><td>关联指南 ID</td></tr>
+<tr><td><code>stepId</code></td><td>uint</td><td>关联步骤 ID</td></tr>
+<tr><td><code>facilityId</code></td><td>uint</td><td>关联设备 ID</td></tr>
+<tr><td><code>faultCode</code></td><td>string</td><td>故障码</td></tr>
+<tr><td><code>question</code></td><td>string</td><td>提问内容</td></tr>
+<tr><td><code>photos</code></td><td>[]string</td><td>现场照片路径列表</td></tr>
+<tr><td><code>answer</code></td><td>string</td><td>回复内容</td></tr>
+<tr><td><code>answeredBy</code></td><td>string</td><td>回复人</td></tr>
+<tr><td><code>answeredAt</code></td><td>string</td><td>回复时间，可为 <code>null</code></td></tr>
+<tr><td><code>status</code></td><td>string</td><td>状态：<code>pending</code> 待回复 / <code>resolved</code> 已解决</td></tr>
+<tr><td><code>isNewIssue</code></td><td>bool</td><td>是否为新问题</td></tr>
+<tr><td><code>executionOptionId</code></td><td>uint</td><td>执行说明选项 ID（0 表示未选择执行说明）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "createTime": "2026-09-06 10:00:00",
+        "updateTime": "2026-09-06 10:00:00",
+        "engineerId": 3,
+        "guideId": 1,
+        "stepId": 11,
+        "facilityId": 101,
+        "faultCode": "E-101",
+        "question": "步骤 1 的判断标准是什么？",
+        "photos": ["/uploads/scene/scene-20260906100000000.jpg"],
+        "answer": "",
+        "answeredBy": "",
+        "answeredAt": null,
+        "status": "pending",
+        "isNewIssue": false,
+        "executionOptionId": 2
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="inquiry-create">5.2 创建提问 — <code>POST /inquiries/create</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>创建提问。<code>status</code> 由服务端固定为 <code>pending</code>；提问成功后该步骤的历史维修次数 +1（失败仅记 Warn 日志，不影响提问主流程）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>engineerId</code></td><td>uint</td><td class="req-no">否</td><td>提出工程师用户 ID</td></tr>
+<tr><td><code>guideId</code></td><td>uint</td><td class="req-no">否</td><td>关联指南 ID</td></tr>
+<tr><td><code>stepId</code></td><td>uint</td><td class="req-no">否</td><td>关联步骤 ID</td></tr>
+<tr><td><code>facilityId</code></td><td>uint</td><td class="req-no">否</td><td>关联设备 ID</td></tr>
+<tr><td><code>faultCode</code></td><td>string</td><td class="req-no">否</td><td>故障码</td></tr>
+<tr><td><code>question</code></td><td>string</td><td class="req-no">否</td><td>提问内容</td></tr>
+<tr><td><code>photos</code></td><td>[]string</td><td class="req-no">否</td><td>现场照片路径列表</td></tr>
+<tr><td><code>isNewIssue</code></td><td>bool</td><td class="req-no">否</td><td>是否为新问题</td></tr>
+<tr><td><code>executionOptionId</code></td><td>uint</td><td class="req-no">否</td><td>执行说明选项 ID（关联 <code>nxp_sop_execution_option.id</code>），0 表示该次反馈未选择执行说明</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "engineerId": 3,
+  "guideId": 1,
+  "stepId": 11,
+  "facilityId": 101,
+  "faultCode": "E-101",
+  "question": "步骤 1 的判断标准是什么？",
+  "photos": ["/uploads/scene/scene-20260906100000000.jpg"],
+  "isNewIssue": false,
+  "executionOptionId": 2
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为创建后的提问记录（结构同 5.1 的 NxpSopInquiry）。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "id": 1,
+    "createTime": "2026-09-06 10:00:00",
+    "updateTime": "2026-09-06 10:00:00",
+    "engineerId": 3,
+    "guideId": 1,
+    "stepId": 11,
+    "facilityId": 101,
+    "faultCode": "E-101",
+    "question": "步骤 1 的判断标准是什么？",
+    "photos": ["/uploads/scene/scene-20260906100000000.jpg"],
+    "answer": "",
+    "answeredBy": "",
+    "answeredAt": null,
+    "status": "pending",
+    "isNewIssue": false,
+    "executionOptionId": 2
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="inquiry-reply">5.3 管理员回复提问 — <code>POST /inquiries/reply</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>管理员回复提问。回复人优先取登录态用户名（RequireActiveUser 已反查）；反查不到时回退前端传入值。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-yes">是</td><td>提问 ID</td></tr>
+<tr><td><code>answer</code></td><td>string</td><td class="req-yes">是</td><td>回复内容（为空返回 400「回复内容不能为空」）</td></tr>
+<tr><td><code>status</code></td><td>string</td><td class="req-no">否</td><td>状态：<code>resolved</code> / <code>pending</code></td></tr>
+<tr><td><code>answeredBy</code></td><td>string</td><td class="req-no">否</td><td>回复人（优先使用登录态用户名，此字段为回退值）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 1,
+  "answer": "以 SOP 文档中的判定标准为准。",
+  "status": "resolved",
+  "answeredBy": "admin"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="inquiry-byids">5.4 按 ID 列表批量获取提问 — <code>POST /inquiries/getNxpSopInquiryByIds</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>按 ID 列表批量获取提问。<code>max=1000</code>：对齐 SQL Server 单条语句参数上限约 2100，避免超限报错（与 GetFacilitiesByIDs 分片约定一致）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>ids</code></td><td>[]uint</td><td class="req-yes">是</td><td>提问 ID 列表，1~1000 个</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "ids": [1, 2]
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为<strong>数组</strong>（不分页），项结构同 5.1 的 NxpSopInquiry 表。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": [
+    { "id": 1, "faultCode": "E-101", "status": "pending", "...": "其余字段同 5.1" }
+  ],
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-media">6. 媒体模块 <code>/media</code></h2>
+<p>全部需登录。上传接口额外挂载 <span class="badge badge-note">免超时</span>；写接口需用户处于启用状态（<span class="badge badge-active">需启用用户</span>）。</p>
+
+<h3 id="media-upload">6.1 上传文件 — <code>POST /media/uploadMedia</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-note">multipart</span><span class="badge badge-note">免超时</span><span class="badge badge-active">需启用用户</span></div>
+<p>上传文件（multipart/form-data），服务端计算 MD5 并与前端提交的 <code>fileHash</code> 比对后保存。</p>
+<p class="sec-title">请求参数（multipart/form-data）</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>file</code></td><td>file</td><td class="req-yes">是</td><td>文件本体</td></tr>
+<tr><td><code>fileHash</code></td><td>string</td><td class="req-yes">是</td><td>客户端计算的文件 MD5（大小写不敏感；未传或为空直接拒绝）</td></tr>
+</tbody>
+</table></div>
+<blockquote class="warn">校验逻辑：服务端计算文件 MD5 与客户端哈希大小写不敏感比对，不一致返回「文件哈希值校验失败，文件可能已损坏，请重新上传」。保存文件名为 <code>{原始名}-{毫秒时间戳}{扩展名}</code>（纯数字时间戳避免同名覆盖）；存储目录取配置 <code>uploadMediaDir</code>（未配置回退 <code>uploadDir</code>）。</blockquote>
+<p>请求示例（curl，非 JSON）：</p>
+<pre class="lang-json"><code>curl -X POST http://host/api/v1/media/uploadMedia \
+  -H "Authorization: Bearer &lt;token&gt;" \
+  -F "file=@/path/to/manual.pdf" \
+  -F "fileHash=d41d8cd98f00b204e9800998ecf8427e"</code></pre>
+<p class="sec-title resp">响应数据</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>hash</code></td><td>string</td><td>服务端计算的文件 MD5</td></tr>
+<tr><td><code>path</code></td><td>string</td><td>保存后的相对路径（以 <code>/</code> 开头）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "path": "/uploads/media/manual-20260906120145123.pdf"
+  },
+  "msg": "上传成功"
+}</code></pre>
+
+<h3 id="media-scene">6.2 上传现场照片 — <code>POST /media/uploadScenePhoto</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-note">免超时</span><span class="badge badge-active">需启用用户</span></div>
+<p>上传现场照片（JSON base64，APP 端），保存到 <code>uploadSceneDir</code> 目录。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>file</code></td><td>string</td><td class="req-yes">是</td><td>图片 base64 字符串，支持 data URI（<code>data:image/png;base64,xxx</code>）或纯 base64，自动剥离前缀</td></tr>
+<tr><td><code>fileHash</code></td><td>string</td><td class="req-no">否</td><td>客户端计算的文件 MD5（与服务端比对，大小写不敏感）</td></tr>
+<tr><td><code>extension</code></td><td>string</td><td class="req-no">否</td><td>前端显式声明的图片扩展名（可选，优先使用；格式如 jpg/png）</td></tr>
+</tbody>
+</table></div>
+<blockquote class="warn">大小上限从配置 <code>maxScenePhotoSizeMB</code> 读取（MB），默认 20MB；base64 字符串约为原图的 4/3 倍，解码前后双重校验。扩展名优先级：前端白名单（jpg/jpeg/png/webp/gif/bmp）&gt; 字节嗅探真实 MIME &gt; 兜底 .png。保存名 <code>scene-{毫秒时间戳}{ext}</code>。</blockquote>
+<pre class="lang-json"><code>{
+  "file": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...（截断）",
+  "fileHash": "d41d8cd98f00b204e9800998ecf8427e",
+  "extension": "png"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>hash</code></td><td>string</td><td>服务端计算的文件 MD5</td></tr>
+<tr><td><code>path</code></td><td>string</td><td>保存后的相对路径（以 <code>/</code> 开头）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "path": "/uploads/scene/scene-20260906120145123.png"
+  },
+  "msg": "上传成功"
+}</code></pre>
+
+<h3 id="media-create">6.3 创建媒体资源信息 — <code>POST /media/createMedia</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>创建媒体资源信息。使用独立 DTO 而非 model 类型别名：不暴露 <code>createTime</code>/<code>updateTime</code> 等内部字段，也不接受前端伪造上传者身份（<code>uploader</code> 一律取自登录态）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>fileName</code></td><td>string</td><td class="req-no">否</td><td>文件名</td></tr>
+<tr><td><code>fileType</code></td><td>string</td><td class="req-no">否</td><td>文件类型（如 pdf / video / image）</td></tr>
+<tr><td><code>filePath</code></td><td>string</td><td class="req-no">否</td><td>文件路径（前端传 <code>#</code> 占位符时映射为空）</td></tr>
+<tr><td><code>description</code></td><td>string</td><td class="req-no">否</td><td>描述</td></tr>
+<tr><td><code>size</code></td><td>string</td><td class="req-no">否</td><td>文件大小（字符串，如 "1.2MB"）</td></tr>
+<tr><td><code>tags</code></td><td>[]string</td><td class="req-no">否</td><td>标签列表</td></tr>
+<tr><td><code>fileHash</code></td><td>string</td><td class="req-no">否</td><td>文件 MD5</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "fileName": "维修手册.pdf",
+  "fileType": "pdf",
+  "filePath": "/uploads/media/维修手册-20260906120145123.pdf",
+  "description": "真空泵维修手册",
+  "size": "1.2MB",
+  "tags": ["手册", "真空泵"],
+  "fileHash": "d41d8cd98f00b204e9800998ecf8427e"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="media-update">6.4 更新媒体资源信息 — <code>POST /media/updateMedia</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>更新媒体资源信息。仅更新业务字段（不更新 <code>uploader</code>/<code>fileHash</code>）；同样处理 <code>#</code> 占位符。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-yes">是</td><td>媒体资源 ID</td></tr>
+<tr><td><code>fileName</code></td><td>string</td><td class="req-no">否</td><td>文件名</td></tr>
+<tr><td><code>fileType</code></td><td>string</td><td class="req-no">否</td><td>文件类型</td></tr>
+<tr><td><code>filePath</code></td><td>string</td><td class="req-no">否</td><td>文件路径（<code>#</code> 占位符映射为空）</td></tr>
+<tr><td><code>description</code></td><td>string</td><td class="req-no">否</td><td>描述</td></tr>
+<tr><td><code>size</code></td><td>string</td><td class="req-no">否</td><td>文件大小</td></tr>
+<tr><td><code>tags</code></td><td>[]string</td><td class="req-no">否</td><td>标签列表</td></tr>
+<tr><td><code>fileHash</code></td><td>string</td><td class="req-no">否</td><td>文件 MD5</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 1,
+  "fileName": "维修手册v2.pdf",
+  "description": "更新版真空泵维修手册",
+  "tags": ["手册", "真空泵", "v2"]
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="media-delete">6.5 删除媒体资源 — <code>POST /media/deleteMedia</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>删除媒体资源（删除数据库记录，不删物理文件）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-yes">是</td><td>媒体资源 ID</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 1
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="media-list">6.6 分页获取媒体资源列表 — <code>POST /media/getMediaList</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取媒体资源列表。<code>keyword</code> 同时匹配文件名或标签（tags 为 JSON 数组字符串，采用精确片段匹配防误命中）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>pageSize</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>文件名或标签，模糊搜索</td></tr>
+<tr><td><code>fileType</code></td><td>string</td><td class="req-no">否</td><td>文件类型，精确搜索</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "pageSize": 10,
+  "keyword": "手册",
+  "fileType": "pdf"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（NxpSopMedia，表 <code>nxp_sop_media</code>）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（BaseModel）</code></td><td>-</td><td>id / createTime / updateTime</td></tr>
+<tr><td><code>fileName</code></td><td>string</td><td>文件名</td></tr>
+<tr><td><code>fileType</code></td><td>string</td><td>文件类型</td></tr>
+<tr><td><code>filePath</code></td><td>string</td><td>文件路径</td></tr>
+<tr><td><code>description</code></td><td>string</td><td>描述</td></tr>
+<tr><td><code>size</code></td><td>string</td><td>文件大小</td></tr>
+<tr><td><code>tags</code></td><td>[]string</td><td>标签列表</td></tr>
+<tr><td><code>uploader</code></td><td>string</td><td>上传者（取自登录态）</td></tr>
+<tr><td><code>fileHash</code></td><td>string</td><td>文件 MD5</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "createTime": "2026-09-06 12:01:45",
+        "updateTime": "2026-09-06 12:01:45",
+        "fileName": "维修手册.pdf",
+        "fileType": "pdf",
+        "filePath": "/uploads/media/维修手册-20260906120145123.pdf",
+        "description": "真空泵维修手册",
+        "size": "1.2MB",
+        "tags": ["手册", "真空泵"],
+        "uploader": "admin",
+        "fileHash": "d41d8cd98f00b204e9800998ecf8427e"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-repair">7. 维修记录模块 <code>/repairRecords</code></h2>
+<p>全部需登录。<code>saveRepairRecordWithDetails</code> 需用户处于启用状态（<span class="badge badge-active">需启用用户</span>）。</p>
+
+<h3 id="repair-save">7.1 保存维修执行记录（PDA 提交） — <code>POST /repairRecords/saveRepairRecordWithDetails</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>保存维修执行记录（PDA 端完工/结束提交）。前端 EngineerApp 提交核心字段：id、faultCode、photos[]、isNewIssue。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-no">否</td><td>维修记录 ID</td></tr>
+<tr><td><code>guideId</code></td><td>uint</td><td class="req-no">否</td><td>关联指南 ID</td></tr>
+<tr><td><code>facilityId</code></td><td>uint</td><td class="req-no">否</td><td>关联设备 ID</td></tr>
+<tr><td><code>engineerId</code></td><td>uint</td><td class="req-no">否</td><td>维修工程师用户 ID</td></tr>
+<tr><td><code>faultCode</code></td><td>string</td><td class="req-no">否</td><td>故障码</td></tr>
+<tr><td><code>machineModelId</code></td><td>uint</td><td class="req-no">否</td><td>关联机型 ID</td></tr>
+<tr><td><code>stepId</code></td><td>uint</td><td class="req-no">否</td><td>关联步骤 ID</td></tr>
+<tr><td><code>repairPositionId</code></td><td>uint</td><td class="req-no">否</td><td>维修位置 ID</td></tr>
+<tr><td><code>repairContentId</code></td><td>uint</td><td class="req-no">否</td><td>维修内容 ID</td></tr>
+<tr><td><code>situationDescription</code></td><td>string</td><td class="req-no">否</td><td>情况描述</td></tr>
+<tr><td><code>requestNumber</code></td><td>string</td><td class="req-no">否</td><td>请求单号</td></tr>
+<tr><td><code>repairNumber</code></td><td>string</td><td class="req-no">否</td><td>维修单号（<strong>由后端生成，忽略请求值</strong>：wx-yyyyMMddHHmmss + 3 位毫秒，例 wx-20260906120145123）</td></tr>
+<tr><td><code>repairTime</code></td><td>string</td><td class="req-no">否</td><td>维修实际开始时间（RFC3339 或 <code>2006-01-02 15:04:05</code>）；缺省/零值时后端按「本次提交即完工」处理，开始时间取当前时间</td></tr>
+<tr><td><code>photos</code></td><td>[]string</td><td class="req-no">否</td><td>现场照片路径列表</td></tr>
+<tr><td><code>sparepartSIDs</code></td><td>[]string</td><td class="req-no">否</td><td>更换备件 sId 列表</td></tr>
+<tr><td><code>isNewIssue</code></td><td>bool</td><td class="req-no">否</td><td>是否为新问题</td></tr>
+<tr><td><code>status</code></td><td>string</td><td class="req-no">否</td><td>PDA 提交的维修状态（如：维修中/已完成/待料中）；未传时兜底为 <code>completed</code></td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 0,
+  "guideId": 1,
+  "facilityId": 101,
+  "engineerId": 3,
+  "faultCode": "E-101",
+  "machineModelId": 44,
+  "stepId": 11,
+  "repairPositionId": 10,
+  "repairContentId": 20,
+  "situationDescription": "更换真空管路后恢复正常",
+  "requestNumber": "RQ-20260906-001",
+  "repairTime": "2026-09-06 12:00:00",
+  "photos": ["/uploads/scene/scene-20260906120000000.jpg"],
+  "sparepartSIDs": ["SP001"],
+  "isNewIssue": false,
+  "status": "已完成"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为保存后的维修记录（NxpSopRepairRecord，表 <code>nxp_sop_repair_record</code>）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（BaseModel）</code></td><td>-</td><td>id / createTime / updateTime</td></tr>
+<tr><td><code>guideId</code></td><td>uint</td><td>关联指南 ID</td></tr>
+<tr><td><code>engineerId</code></td><td>uint</td><td>维修工程师用户 ID</td></tr>
+<tr><td><code>facilityId</code></td><td>uint</td><td>关联设备 ID</td></tr>
+<tr><td><code>machineModelId</code></td><td>uint</td><td>关联机型 ID</td></tr>
+<tr><td><code>stepId</code></td><td>uint</td><td>关联步骤 ID</td></tr>
+<tr><td><code>repairPositionId</code></td><td>uint</td><td>维修位置 ID</td></tr>
+<tr><td><code>repairContentId</code></td><td>uint</td><td>维修内容 ID</td></tr>
+<tr><td><code>situationDescription</code></td><td>string</td><td>情况描述</td></tr>
+<tr><td><code>requestNumber</code></td><td>string</td><td>请求单号</td></tr>
+<tr><td><code>repairNumber</code></td><td>string</td><td>维修单号（后端生成）</td></tr>
+<tr><td><code>faultCode</code></td><td>string</td><td>故障码</td></tr>
+<tr><td><code>repairTime</code></td><td>string</td><td>维修开始时间，可为 <code>null</code></td></tr>
+<tr><td><code>photos</code></td><td>[]string</td><td>现场照片路径列表</td></tr>
+<tr><td><code>status</code></td><td>string</td><td>维修状态</td></tr>
+<tr><td><code>sparepartSIDs</code></td><td>[]string</td><td>更换备件 sId 列表（注意键名为大写 <code>sparepartSIDs</code>）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "id": 1,
+    "createTime": "2026-09-06 12:01:45",
+    "updateTime": "2026-09-06 12:01:45",
+    "guideId": 1,
+    "engineerId": 3,
+    "facilityId": 101,
+    "machineModelId": 44,
+    "stepId": 11,
+    "repairPositionId": 10,
+    "repairContentId": 20,
+    "situationDescription": "更换真空管路后恢复正常",
+    "requestNumber": "RQ-20260906-001",
+    "repairNumber": "wx-20260906120145123",
+    "faultCode": "E-101",
+    "repairTime": "2026-09-06 12:00:00",
+    "photos": ["/uploads/scene/scene-20260906120000000.jpg"],
+    "status": "已完成",
+    "sparepartSIDs": ["SP001"]
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="repair-list">7.2 分页获取维修记录列表 — <code>POST /repairRecords/list</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取维修记录列表（管理后台展示使用记录）。分页归一化在 handler 内手写（<code>page&lt;=0</code>→1、<code>limit&lt;=0</code>→10、<code>limit&gt;100</code>→100）；筛选字段均为精确匹配。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>facilityId</code></td><td>uint</td><td class="req-no">否</td><td>按设备 ID 精确筛选</td></tr>
+<tr><td><code>faultCode</code></td><td>string</td><td class="req-no">否</td><td>按故障码精确筛选</td></tr>
+<tr><td><code>engineerId</code></td><td>uint</td><td class="req-no">否</td><td>按工程师 ID 精确筛选</td></tr>
+<tr><td><code>status</code></td><td>string</td><td class="req-no">否</td><td>按维修状态精确筛选</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "facilityId": 101,
+  "faultCode": "E-101",
+  "engineerId": 3,
+  "status": "已完成"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封（手写结构，字段与通用分页信封一致），<code>data.list</code> 项结构同 7.1 响应的 NxpSopRepairRecord。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "createTime": "2026-09-06 12:01:45",
+        "updateTime": "2026-09-06 12:01:45",
+        "guideId": 1,
+        "engineerId": 3,
+        "facilityId": 101,
+        "machineModelId": 44,
+        "stepId": 11,
+        "repairPositionId": 10,
+        "repairContentId": 20,
+        "situationDescription": "更换真空管路后恢复正常",
+        "requestNumber": "RQ-20260906-001",
+        "repairNumber": "wx-20260906120145123",
+        "faultCode": "E-101",
+        "repairTime": "2026-09-06 12:00:00",
+        "photos": ["/uploads/scene/scene-20260906120000000.jpg"],
+        "status": "已完成",
+        "sparepartSIDs": ["SP001"]
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="repair-byids">7.3 按 ID 列表批量获取维修记录 — <code>POST /repairRecords/getNxpRepairRecordByIds</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>按 ID 列表批量获取维修记录。<code>ids</code> 上限 1000（对齐 SQL Server 单条语句参数上限约 2100）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>ids</code></td><td>[]uint</td><td class="req-yes">是</td><td>维修记录 ID 列表，1~1000 个</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "ids": [1, 2]
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为<strong>数组</strong>（不分页），项结构同 7.1 的 NxpSopRepairRecord。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": [
+    { "id": 1, "repairNumber": "wx-20260906120145123", "...": "其余字段同 7.1" }
+  ],
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-menu">8. 菜单与职务模块 <code>/menu</code></h2>
+<p>全部需登录。写接口需用户处于启用状态（<span class="badge badge-active">需启用用户</span>）。职务（<code>nxp_sop_position</code>）为预置只读表，增删改全部被 Hook 拦截。</p>
+
+<h3 id="menu-getmenulist">8.1 分页获取菜单列表 — <code>POST /menu/getMenuList</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取菜单列表。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字模糊搜索（menu_name）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "keyword": "指南"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（NxpSopMenu，表 <code>nxp_sop_menu</code>）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（BaseModel）</code></td><td>-</td><td>id / createTime / updateTime</td></tr>
+<tr><td><code>menuName</code></td><td>string</td><td>菜单名称</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      { "id": 1, "createTime": "2026-09-01 00:00:00", "updateTime": "2026-09-01 00:00:00", "menuName": "指南管理" }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="menu-getmenuall">8.2 获取全部菜单 — <code>POST /menu/getMenuAll</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>获取全部菜单（供职务-菜单配置整表展示），无分页。</p>
+<p class="sec-title">请求参数</p>
+<p>无（请求体可为 <code>{}</code>）。</p>
+<pre class="lang-json"><code>{}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为 <code>{ "list": NxpSopMenu[] }</code>，项结构同 8.1。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      { "id": 1, "createTime": "2026-09-01 00:00:00", "updateTime": "2026-09-01 00:00:00", "menuName": "指南管理" },
+      { "id": 2, "createTime": "2026-09-01 00:00:00", "updateTime": "2026-09-01 00:00:00", "menuName": "维修记录" }
+    ]
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="menu-savemenu">8.3 新增/更新菜单 — <code>POST /menu/saveMenu</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>新增或更新菜单。独立 DTO 仅暴露 id 与业务字段，<code>menuName</code> 必填；<code>id</code> 为 0 表示新增，非 0 表示重命名对应菜单（由 service 区分）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-no">否</td><td>菜单 ID；0 新增，非 0 重命名</td></tr>
+<tr><td><code>menuName</code></td><td>string</td><td class="req-yes">是</td><td>菜单名称（重名返回 409）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 0,
+  "menuName": "报表中心"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="menu-deletemenu">8.4 删除菜单 — <code>POST /menu/deleteMenu</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>删除菜单。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-yes">是</td><td>菜单 ID</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 2
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="menu-getusermenus">8.5 获取当前用户可见菜单 — <code>POST /menu/getUserMenus</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>获取当前登录用户可见的菜单（用户身份取自 JWT Claims）。兜底：id 为 1 的用户即为 admin，拥有全部菜单权限（防御性保留，兼容查不到用户名的边界）；用户不存在按空列表处理。</p>
+<p class="sec-title">请求参数</p>
+<p>无（请求体可为 <code>{}</code>）。</p>
+<pre class="lang-json"><code>{}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为 <code>{ "list": NxpSopMenu[] }</code>，项结构同 8.1。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      { "id": 1, "createTime": "2026-09-01 00:00:00", "updateTime": "2026-09-01 00:00:00", "menuName": "指南管理" }
+    ]
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="menu-getpositionlist">8.6 获取全部职务 — <code>POST /menu/getPositionList</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>获取全部职务。<strong>不含 menus</strong>（未 Preload）。</p>
+<p class="sec-title">请求参数</p>
+<p>无（请求体可为 <code>{}</code>）。</p>
+<pre class="lang-json"><code>{}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为 <code>{ "list": NxpSopPosition[] }</code>（<strong>menus 为 null</strong>）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（BaseModel）</code></td><td>-</td><td>id / createTime / updateTime</td></tr>
+<tr><td><code>positionName</code></td><td>string</td><td>职务名称</td></tr>
+<tr><td><code>menus</code></td><td>array</td><td>可见菜单列表（本接口为 <code>null</code>；项结构同 8.1）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "createTime": "2026-09-01 00:00:00",
+        "updateTime": "2026-09-01 00:00:00",
+        "positionName": "初级工程师",
+        "menus": null
+      }
+    ]
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="menu-getpositionmenus">8.7 按职务获取可见菜单 — <code>POST /menu/getPositionMenus</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>按职务获取可见菜单。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>positionId</code></td><td>int</td><td class="req-yes">是</td><td>职务 ID</td></tr>
+<tr><td><code>menuIds</code></td><td>[]int</td><td class="req-no">否</td><td>菜单 ID 列表（仅保存接口使用，本查询接口不使用）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "positionId": 1,
+  "menuIds": []
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为 <code>{ "list": NxpSopMenu[] }</code>，项结构同 8.1。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      { "id": 1, "createTime": "2026-09-01 00:00:00", "updateTime": "2026-09-01 00:00:00", "menuName": "指南管理" }
+    ]
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="menu-getpositionswithmenus">8.8 获取全部职务及其菜单 — <code>POST /menu/getPositionsWithMenus</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>获取全部职务及其可见菜单（Preload Menus）。</p>
+<p class="sec-title">请求参数</p>
+<p>无（请求体可为 <code>{}</code>）。</p>
+<pre class="lang-json"><code>{}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为 <code>{ "list": NxpSopPosition[] }</code>（<strong>含 menus 数组</strong>）：</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "createTime": "2026-09-01 00:00:00",
+        "updateTime": "2026-09-01 00:00:00",
+        "positionName": "初级工程师",
+        "menus": [
+          { "id": 1, "createTime": "2026-09-01 00:00:00", "updateTime": "2026-09-01 00:00:00", "menuName": "指南管理" }
+        ]
+      }
+    ]
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="menu-savepositionmenus">8.9 保存职务-菜单关联 — <code>POST /menu/savePositionMenus</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>保存职务-菜单关联（整体覆盖：先删旧关联再写入传入列表）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>positionId</code></td><td>int</td><td class="req-yes">是</td><td>职务 ID</td></tr>
+<tr><td><code>menuIds</code></td><td>[]int</td><td class="req-no">否</td><td>该职务可见的菜单 ID 全量列表（传空即清空关联）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "positionId": 1,
+  "menuIds": [1, 2, 3]
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-execoption">9. 执行说明选项模块 <code>/executionOption</code></h2>
+<p>全部需登录。写接口需用户处于启用状态（<span class="badge badge-active">需启用用户</span>）。</p>
+
+<h3 id="exec-list">9.1 分页获取选项列表 — <code>POST /executionOption/getExecutionOptionList</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取执行说明选项列表。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字模糊搜索（label）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "keyword": "已确认"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（NxpSopExecutionOption，表 <code>nxp_sop_execution_option</code>）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（BaseModel）</code></td><td>-</td><td>id / createTime / updateTime</td></tr>
+<tr><td><code>label</code></td><td>string</td><td>选项文案</td></tr>
+<tr><td><code>sortOrder</code></td><td>int</td><td>排序值，越小越靠前</td></tr>
+<tr><td><code>active</code></td><td>bool</td><td>是否启用（停用后 PDA 下拉不再展示）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "createTime": "2026-09-01 00:00:00",
+        "updateTime": "2026-09-01 00:00:00",
+        "label": "已按 SOP 执行完成",
+        "sortOrder": 1,
+        "active": true
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="exec-active">9.2 获取启用选项（供 PDA 下拉） — <code>POST /executionOption/getActiveExecutionOptions</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>获取启用中的执行说明选项（供 PDA 下拉）。仅返回 <code>active=true</code>，按 <code>sort_order ASC, id ASC</code> 排序。</p>
+<p class="sec-title">请求参数</p>
+<p>无（请求体可为 <code>{}</code>）。</p>
+<pre class="lang-json"><code>{}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为 <code>{ "list": NxpSopExecutionOption[] }</code>，项结构同 9.1。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "createTime": "2026-09-01 00:00:00",
+        "updateTime": "2026-09-01 00:00:00",
+        "label": "已按 SOP 执行完成",
+        "sortOrder": 1,
+        "active": true
+      }
+    ]
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="exec-create">9.3 新增选项 — <code>POST /executionOption/createExecutionOption</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>新增执行说明选项。独立 DTO：仅暴露业务字段，<code>label</code> 必填；不沿用 model 类型别名（不直写内部字段）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-no">否</td><td>创建时忽略</td></tr>
+<tr><td><code>label</code></td><td>string</td><td class="req-yes">是</td><td>选项文案（重复返回 409）</td></tr>
+<tr><td><code>sortOrder</code></td><td>int</td><td class="req-no">否</td><td>排序值，越小越靠前</td></tr>
+<tr><td><code>active</code></td><td>bool</td><td class="req-no">否</td><td>是否启用</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 0,
+  "label": "未按 SOP 执行，原因：…",
+  "sortOrder": 2,
+  "active": true
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为创建后的选项记录（结构同 9.1）。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "id": 2,
+    "createTime": "2026-09-06 10:00:00",
+    "updateTime": "2026-09-06 10:00:00",
+    "label": "未按 SOP 执行，原因：…",
+    "sortOrder": 2,
+    "active": true
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="exec-update">9.4 更新选项 — <code>POST /executionOption/updateExecutionOption</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>更新执行说明选项（此时 <code>id</code> 生效）。请求参数同 9.3。</p>
+<p class="sec-title">请求参数</p>
+<pre class="lang-json"><code>{
+  "id": 2,
+  "label": "未按 SOP 执行（附原因）",
+  "sortOrder": 2,
+  "active": true
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="exec-delete">9.5 删除选项 — <code>POST /executionOption/deleteExecutionOption</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>删除执行说明选项。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-yes">是</td><td>选项 ID</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 2
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+<blockquote class="warn">已被提问引用时返回 409「该执行说明选项已被提问引用，不能删除」。</blockquote>
+
+<hr>
+<h2 id="m-faultcat">10. 故障分类模块 <code>/faultCategory</code></h2>
+<p>全部需登录。写接口需用户处于启用状态（<span class="badge badge-active">需启用用户</span>）。</p>
+
+<h3 id="fc-list">10.1 分页获取故障分类列表 — <code>POST /faultCategory/getFaultCategoryList</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取故障分类列表（label 模糊匹配）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字模糊搜索（label）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "keyword": "传感器"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（NxpSopFaultCategory，表 <code>nxp_sop_fault_category</code>）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（BaseModel）</code></td><td>-</td><td>id / createTime / updateTime</td></tr>
+<tr><td><code>label</code></td><td>string</td><td>分类文案</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 2,
+        "createTime": "2026-09-01 00:00:00",
+        "updateTime": "2026-09-01 00:00:00",
+        "label": "传感器污染"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="fc-byids">10.2 按 ID 列表批量获取 — <code>POST /faultCategory/getFaultCategoryByIDs</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>按 ID 列表批量获取故障分类。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>ids</code></td><td>[]uint</td><td class="req-yes">是</td><td>故障分类 ID 列表，1~1000 个</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "ids": [1, 2]
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为<strong>数组</strong>（不分页），项结构同 10.1。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": [
+    { "id": 2, "createTime": "2026-09-01 00:00:00", "updateTime": "2026-09-01 00:00:00", "label": "传感器污染" }
+  ],
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="fc-bymodel">10.3 按机型 ID 分页查询关联故障分类及报警明细 — <code>POST /faultCategory/getFaultCategoriesByModelId</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>机型与分类通过 <code>nxp_sop_guide</code> 间接关联（指南同时持有 <code>machine_model_id</code> 与 <code>fault_category_id</code>）。仅取启用（<code>enabled = 1</code>）且 <code>fault_category_id &gt; 0</code> 的指南；分页粒度为「分类组」，按 <code>fault_category_id</code> 升序。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数（分类组数），默认 10，最大 100</td></tr>
+<tr><td><code>machineModelId</code></td><td>uint</td><td class="req-yes">是</td><td>机型 ID</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "machineModelId": 44
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（FaultCategoryGroup）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>faultCategoryId</code></td><td>uint</td><td>故障分类 ID</td></tr>
+<tr><td><code>label</code></td><td>string</td><td>分类文案</td></tr>
+<tr><td><code>faults</code></td><td>array</td><td>该分类下的报警明细列表，项结构见下表</td></tr>
+</tbody>
+</table></div>
+<p><strong>faults 项结构（FaultCategoryFault）</strong>：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>faultCode</code></td><td>string</td><td>故障码</td></tr>
+<tr><td><code>faultCodeDescription</code></td><td>string</td><td>报警代码描述</td></tr>
+<tr><td><code>guideId</code></td><td>uint</td><td>关联指南 ID</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "faultCategoryId": 2,
+        "label": "传感器污染",
+        "faults": [
+          {
+            "faultCode": "E-101",
+            "faultCodeDescription": "真空报警",
+            "guideId": 1
+          }
+        ]
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="fc-create">10.4 新增故障分类 — <code>POST /faultCategory/createFaultCategory</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>新增故障分类。独立 DTO：仅暴露 id 与业务字段，<code>label</code> 必填。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-no">否</td><td>创建时忽略</td></tr>
+<tr><td><code>label</code></td><td>string</td><td class="req-yes">是</td><td>分类文案（重复返回 409）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 0,
+  "label": "气路异常"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为创建后的故障分类（结构同 10.1）。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "id": 3,
+    "createTime": "2026-09-06 10:00:00",
+    "updateTime": "2026-09-06 10:00:00",
+    "label": "气路异常"
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="fc-update">10.5 更新故障分类 — <code>POST /faultCategory/updateFaultCategory</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>更新故障分类（此时 <code>id</code> 生效）。请求参数同 10.4。</p>
+<p class="sec-title">请求参数</p>
+<pre class="lang-json"><code>{
+  "id": 3,
+  "label": "气路压力异常"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="fc-delete">10.6 删除故障分类 — <code>POST /faultCategory/deleteFaultCategory</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>删除故障分类。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-yes">是</td><td>分类 ID</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 3
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-machinemodel">11. 机型模块 <code>/machineModel</code></h2>
+<p>全部需登录。</p>
+
+<h3 id="mm-list">11.1 分页获取机型列表 — <code>POST /machineModel/getMachineModelList</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取机型列表（<code>nxp_machine_model</code>，createdt/updatedt 为字符串）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字模糊搜索（name）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "keyword": "NX"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（NxpMachineModel）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>int</td><td>机型 ID</td></tr>
+<tr><td><code>name</code></td><td>string</td><td>机型名称</td></tr>
+<tr><td><code>status</code></td><td>int</td><td>状态</td></tr>
+<tr><td><code>createBy</code></td><td>int</td><td>创建人</td></tr>
+<tr><td><code>createdt</code></td><td>string</td><td>创建时间（数据库原值字符串）</td></tr>
+<tr><td><code>updatedt</code></td><td>string</td><td>更新时间（数据库原值字符串）</td></tr>
+<tr><td><code>inspectionPosition</code></td><td>string</td><td>点检位置</td></tr>
+<tr><td><code>processId</code></td><td>int</td><td>工艺 ID</td></tr>
+<tr><td><code>owner</code></td><td>int</td><td>负责人</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 44,
+        "name": "NX-2000",
+        "status": 1,
+        "createBy": 1,
+        "createdt": "2026-01-01 00:00:00",
+        "updatedt": "2026-01-01 00:00:00",
+        "inspectionPosition": "1,2,3",
+        "processId": 1,
+        "owner": 1
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="mm-byids">11.2 按 ID 列表批量获取机型 — <code>POST /machineModel/getMachineModelsByIDs</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>按 ID 列表批量获取机型。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>ids</code></td><td>[]uint</td><td class="req-yes">是</td><td>机型 ID 列表，1~1000 个</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "ids": [44, 45]
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为<strong>数组</strong>（不分页），项结构同 11.1。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": [
+    { "id": 44, "name": "NX-2000", "...": "其余字段同 11.1" }
+  ],
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-inspection">12. 点检基础数据模块（Onebe 只读）</h2>
+<p>全部需登录。问题类型为【web 端使用】（后台数据字典）；维修位置、维修内容为【app + web 使用】。</p>
+
+<h3 id="insp-qtype">12.1 问题类型列表 — <code>POST /inspectionQuestionType/getInspectionQuestionTypeList</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取问题类型列表（<code>keyword</code> 按 name LIKE）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字模糊搜索（name）</td></tr>
+<tr><td><code>processId</code></td><td>int?</td><td class="req-no">否</td><td>按工艺 ID 过滤（<code>process_id</code> 列）。三态：不传或 <code>null</code> → 不过滤；传 <code>0</code> → 仅查未绑定工序（<code>process_id IS NULL</code>）的记录；传 <code>&gt;0</code> → 精确过滤</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "keyword": "机械",
+  "processId": 1
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（NxpInspectionQuestionType，表 <code>nxp_inspection_question_type</code>）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>int</td><td>问题类型 ID</td></tr>
+<tr><td><code>name</code></td><td>string</td><td>类型名称</td></tr>
+<tr><td><code>status</code></td><td>int</td><td>状态</td></tr>
+<tr><td><code>createTime</code></td><td>string</td><td>创建时间（<code>YYYY-MM-DD HH:mm:ss</code>）</td></tr>
+<tr><td><code>processId</code></td><td>int?</td><td>工艺 ID（未绑定工序时为 <code>null</code>）</td></tr>
+<tr><td><code>count</code></td><td>int</td><td>计数</td></tr>
+<tr><td><code>type</code></td><td>int</td><td>类型编号</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 3,
+        "name": "机械故障",
+        "status": 1,
+        "createTime": "2026-01-01 00:00:00",
+        "processId": 1,
+        "count": 12,
+        "type": 1
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="insp-position">12.2 维修位置列表 — <code>POST /inspectionPosition/getInspectionPositionList</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取维修位置列表。<code>modelId</code> 按机型过滤：<code>position.model_id</code> 为逗号分隔的机型编号（如 "44,45,60"），传 0 不过滤；&gt;0 时仅返回包含该机型编号的位置（<code>model_id</code> 为空 = 通用位置，始终返回）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字模糊搜索（position）</td></tr>
+<tr><td><code>modelId</code></td><td>int</td><td class="req-no">否</td><td>按机型过滤；0 不过滤；&gt;0 仅返回包含该机型编号的位置（model_id 为空 = 通用位置，始终返回）</td></tr>
+<tr><td><code>processId</code></td><td>int?</td><td class="req-no">否</td><td>按工艺 ID 过滤（<code>process_id</code> 列）。三态：不传或 <code>null</code> → 不过滤；传 <code>0</code> → 仅查未绑定工序（<code>process_id IS NULL</code>）的记录；传 <code>&gt;0</code> → 精确过滤</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "keyword": "真空",
+  "modelId": 44,
+  "processId": 1
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（NxpInspectionPosition，表 <code>nxp_inspection_position</code>）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>int</td><td>维修位置 ID</td></tr>
+<tr><td><code>position</code></td><td>string</td><td>位置名称</td></tr>
+<tr><td><code>status</code></td><td>int</td><td>状态</td></tr>
+<tr><td><code>createdAt</code></td><td>string</td><td>创建时间（<code>YYYY-MM-DD HH:mm:ss</code>）</td></tr>
+<tr><td><code>updatedAt</code></td><td>string</td><td>更新时间（<code>YYYY-MM-DD HH:mm:ss</code>）</td></tr>
+<tr><td><code>modelId</code></td><td>string</td><td>适配机型编号（逗号分隔，如 "44,45,60"；空 = 通用位置）</td></tr>
+<tr><td><code>processId</code></td><td>int?</td><td>工艺 ID（未绑定工序时为 <code>null</code>）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 10,
+        "position": "真空泵",
+        "status": 1,
+        "createdAt": "2026-01-01 00:00:00",
+        "updatedAt": "2026-01-01 00:00:00",
+        "modelId": "44,45",
+        "processId": 1
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="insp-content">12.3 维修内容列表 — <code>POST /inspectionContent/getInspectionContentList</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取维修内容列表。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>positionId</code></td><td>int</td><td class="req-no">否</td><td>按维修位置 ID 筛选</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字模糊搜索（content）</td></tr>
+<tr><td><code>processId</code></td><td>int?</td><td class="req-no">否</td><td>按工艺 ID 过滤（<code>process_id</code> 列）。三态：不传或 <code>null</code> → 不过滤；传 <code>0</code> → 仅查未绑定工序（<code>process_id IS NULL</code>）的记录；传 <code>&gt;0</code> → 精确过滤</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "positionId": 10,
+  "keyword": "更换",
+  "processId": 1
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（NxpInspectionContent，表 <code>nxp_inspection_content</code>；createdAt/updatedAt 为 int unix 秒）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>int</td><td>维修内容 ID</td></tr>
+<tr><td><code>positionId</code></td><td>int</td><td>关联维修位置 ID</td></tr>
+<tr><td><code>content</code></td><td>string</td><td>维修内容文案</td></tr>
+<tr><td><code>status</code></td><td>int</td><td>状态</td></tr>
+<tr><td><code>createdAt</code></td><td>int</td><td>创建时间（unix 秒）</td></tr>
+<tr><td><code>updatedAt</code></td><td>int</td><td>更新时间（unix 秒）</td></tr>
+<tr><td><code>picType</code></td><td>int64</td><td>图片类型</td></tr>
+<tr><td><code>checkPerson</code></td><td>string</td><td>检查人</td></tr>
+<tr><td><code>processId</code></td><td>int?</td><td>工艺 ID（未绑定工序时为 <code>null</code>）</td></tr>
+<tr><td><code>isCheck</code></td><td>int</td><td>是否检查</td></tr>
+<tr><td><code>checkGroupId</code></td><td>int64</td><td>检查组 ID</td></tr>
+<tr><td><code>checkProcessId</code></td><td>int64</td><td>检查工艺 ID</td></tr>
+<tr><td><code>isReplaceMold</code></td><td>int8</td><td>是否更换模具（可为 <code>null</code>）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 20,
+        "positionId": 10,
+        "content": "更换真空泵滤芯",
+        "status": 1,
+        "createdAt": 1760000000,
+        "updatedAt": 1760000000,
+        "picType": 0,
+        "checkPerson": "",
+        "processId": 1,
+        "isCheck": 0,
+        "checkGroupId": 0,
+        "checkProcessId": 0,
+        "isReplaceMold": null
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-sparepart">13. 备件模块 <code>/sparepart</code></h2>
+<p>全部需登录。备件主表在 Sparepart 只读库。</p>
+
+<h3 id="sp-list">13.1 分页获取备件列表 — <code>POST /sparepart/list</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取备件列表【APP 端使用】（APP 领料；后台端未调用）。<code>keyword</code> 模糊匹配 <code>s_brand / s_model / s_description</code>，按 s_id 倒序。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字，模糊匹配品牌 / 型号 / 描述</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "keyword": "滤芯"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（Sparepart，Sparepart 库 <code>sparepart</code> 表；主键 <code>s_id</code> 为字符串）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>sId</code></td><td>string</td><td>备件编号（主键）</td></tr>
+<tr><td><code>sBrand</code></td><td>string</td><td>品牌</td></tr>
+<tr><td><code>sModel</code></td><td>string</td><td>型号</td></tr>
+<tr><td><code>sDescription</code></td><td>string</td><td>描述</td></tr>
+<tr><td><code>kKind</code></td><td>string</td><td>种类</td></tr>
+<tr><td><code>sVendor</code></td><td>string</td><td>供应商</td></tr>
+<tr><td><code>sPrice</code></td><td>number</td><td>价格（decimal）</td></tr>
+<tr><td><code>sPicture</code></td><td>string</td><td>图片</td></tr>
+<tr><td><code>sSafeAmount</code></td><td>int</td><td>安全库存</td></tr>
+<tr><td><code>sAmount</code></td><td>int</td><td>当前库存</td></tr>
+<tr><td><code>wId</code></td><td>string</td><td>仓库 ID</td></tr>
+<tr><td><code>warehouseId</code></td><td>string</td><td>仓库编号</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "sId": "SP001",
+        "sBrand": "SMC",
+        "sModel": "AF30",
+        "sDescription": "空气过滤滤芯",
+        "kKind": "滤芯",
+        "sVendor": "供应商A",
+        "sPrice": 128.5,
+        "sPicture": "",
+        "sSafeAmount": 5,
+        "sAmount": 20,
+        "wId": "W1",
+        "warehouseId": "WH01"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="sp-listattr">13.2 分页获取备件列表（含 SOP 属性） — <code>POST /sparepart/listWithAttr</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取备件列表（含 SOP 属性 standardCycle/safetyFactor）。请求参数同 13.1。</p>
+<blockquote>备件在 Sparepart 只读库、属性在 SOPHub 主库，跨库无法 JOIN：先查主表再按 s_id 批量回查 attr 与 use（机型），内存拼装。</blockquote>
+<p class="sec-title">请求参数</p>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "keyword": "滤芯"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（SparepartWithAttr = Sparepart 全字段 + 3 个 SOP 属性字段）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（Sparepart 全字段）</code></td><td>-</td><td>sId / sBrand / sModel / sDescription / kKind / sVendor / sPrice / sPicture / sSafeAmount / sAmount / wId / warehouseId，同 13.1</td></tr>
+<tr><td><code>standardCycle</code></td><td>int</td><td>标准更换周期（SOP 属性；未配置为 <code>null</code>）</td></tr>
+<tr><td><code>safetyFactor</code></td><td>number</td><td>安全系数（SOP 属性；未配置为 <code>null</code>）</td></tr>
+<tr><td><code>eModel</code></td><td>[]string</td><td>适用机型列表（来自 <code>use</code> 表 e_model 去重）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "sId": "SP001",
+        "sBrand": "SMC",
+        "sModel": "AF30",
+        "sDescription": "空气过滤滤芯",
+        "kKind": "滤芯",
+        "sVendor": "供应商A",
+        "sPrice": 128.5,
+        "sPicture": "",
+        "sSafeAmount": 5,
+        "sAmount": 20,
+        "wId": "W1",
+        "warehouseId": "WH01",
+        "standardCycle": 90,
+        "safetyFactor": 1.2,
+        "eModel": ["NX-2000", "NX-3000"]
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-sparepartattr">14. 备件属性模块 <code>/sparepartAttr</code></h2>
+<p>全部需登录。写接口需用户处于启用状态（<span class="badge badge-active">需启用用户</span>）。属性配置存于 SOPHub 主库，按 <code>sId</code> 关联 Sparepart 库备件。</p>
+
+<h3 id="spa-list">14.1 分页获取备件属性列表 — <code>POST /sparepartAttr/list</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>分页获取备件属性列表。<code>keyword</code> 非空时先在老库按 s_id/品牌/型号/描述模糊匹配出 s_id 集合过滤，每页再按 s_id 批量回查老库内存拼装。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>limit</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字，匹配 s_id / 品牌 / 型号 / 描述</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "limit": 10,
+  "keyword": "SP001"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（SparepartAttrListItem = 属性全字段 + 老库备件信息）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>（BaseModel）</code></td><td>-</td><td>id / createTime / updateTime</td></tr>
+<tr><td><code>sId</code></td><td>string</td><td>备件编号</td></tr>
+<tr><td><code>standardCycle</code></td><td>int</td><td>标准更换周期</td></tr>
+<tr><td><code>safetyFactor</code></td><td>number</td><td>安全系数</td></tr>
+<tr><td><code>sBrand</code></td><td>string</td><td>品牌（联查 Sparepart 库）</td></tr>
+<tr><td><code>sModel</code></td><td>string</td><td>型号（联查 Sparepart 库）</td></tr>
+<tr><td><code>sDescription</code></td><td>string</td><td>描述（联查 Sparepart 库）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "createTime": "2026-09-06 10:00:00",
+        "updateTime": "2026-09-06 10:00:00",
+        "sId": "SP001",
+        "standardCycle": 90,
+        "safetyFactor": 1.2,
+        "sBrand": "SMC",
+        "sModel": "AF30",
+        "sDescription": "空气过滤滤芯"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="spa-bysid">14.2 按备件 sId 获取属性 — <code>POST /sparepartAttr/getSparepartAttrBySId</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>按备件 sId 获取属性，查无返回 404。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>sId</code></td><td>string</td><td class="req-yes">是</td><td>备件编号</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "sId": "SP001"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为属性对象（NxpSopSparepartAttr）：</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "id": 1,
+    "createTime": "2026-09-06 10:00:00",
+    "updateTime": "2026-09-06 10:00:00",
+    "sId": "SP001",
+    "standardCycle": 90,
+    "safetyFactor": 1.2
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="spa-create">14.3 新增备件属性 — <code>POST /sparepartAttr/create</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>新增备件属性。<code>sId</code> 须为老库已存在的备件；该备件已配置属性时返回 409，备件不存在时返回 404。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>sId</code></td><td>string</td><td class="req-yes">是</td><td>备件编号（须为老库已存在的备件）</td></tr>
+<tr><td><code>standardCycle</code></td><td>int</td><td class="req-no">否</td><td>标准更换周期</td></tr>
+<tr><td><code>safetyFactor</code></td><td>number</td><td class="req-no">否</td><td>安全系数</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "sId": "SP002",
+  "standardCycle": 180,
+  "safetyFactor": 1.5
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为创建后的属性对象（结构同 14.2）。</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "id": 2,
+    "createTime": "2026-09-06 10:00:00",
+    "updateTime": "2026-09-06 10:00:00",
+    "sId": "SP002",
+    "standardCycle": 180,
+    "safetyFactor": 1.5
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="spa-update">14.4 更新备件属性 — <code>POST /sparepartAttr/update</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>更新备件属性（sId 创建后不可变，不接收）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-yes">是</td><td>属性记录 ID</td></tr>
+<tr><td><code>standardCycle</code></td><td>int</td><td class="req-no">否</td><td>标准更换周期</td></tr>
+<tr><td><code>safetyFactor</code></td><td>number</td><td class="req-no">否</td><td>安全系数</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 2,
+  "standardCycle": 200,
+  "safetyFactor": 1.3
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="spa-delete">14.5 删除备件属性 — <code>POST /sparepartAttr/delete</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span><span class="badge badge-active">需启用用户</span></div>
+<p>删除备件属性。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>uint</td><td class="req-yes">是</td><td>属性记录 ID</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "id": 2
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {},
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-equipment">15. 设备机型模块 <code>/equipment</code></h2>
+<p>全部需登录。数据来自 Sparepart 只读库。</p>
+
+<h3 id="eq-list">15.1 获取全部设备机型 — <code>POST /equipment/list</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>获取全部设备机型（无分页，查全部，按 ID 升序）。</p>
+<p class="sec-title">请求参数</p>
+<p>无（请求体可为 <code>{}</code>）。</p>
+<pre class="lang-json"><code>{}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为 <code>{ "list": Equipment[] }</code>：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>int</td><td>机型 ID</td></tr>
+<tr><td><code>eModel</code></td><td>string</td><td>机型型号</td></tr>
+<tr><td><code>eBrand</code></td><td>string</td><td>品牌</td></tr>
+<tr><td><code>rProcess</code></td><td>string</td><td>相关工艺</td></tr>
+<tr><td><code>eShort</code></td><td>string</td><td>机型简称</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      { "id": 1, "eModel": "NX-2000", "eBrand": "NXP", "rProcess": "P1", "eShort": "2000" }
+    ]
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-inspservice">16. 维修服务模块 <code>/inspectionService</code></h2>
+<p>全部需登录。数据跨三库：更换记录在 Onebe 库、备件字典在 Sparepart 库、用户姓名反查 Onebe <code>nxp_user_info</code>；无法 JOIN，采用「分页查主表 → 批量查维修服务 → 批量反查用户 → 批量查备件字典 → 内存拼装」。</p>
+
+<h3 id="is-replist">16.1 备件更换列表 — <code>POST /inspectionService/sparepartReplaceList</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>备件更换列表（web 端使用）。日期筛选含当天（endDate）。</p>
+<p class="sec-title">请求参数</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>page</code></td><td>int</td><td class="req-no">否</td><td>页码，默认 1</td></tr>
+<tr><td><code>pageSize</code></td><td>int</td><td class="req-no">否</td><td>每页条数，默认 10，最大 100</td></tr>
+<tr><td><code>keyword</code></td><td>string</td><td class="req-no">否</td><td>关键字模糊搜索</td></tr>
+<tr><td><code>orderKey</code></td><td>string</td><td class="req-no">否</td><td>排序字段</td></tr>
+<tr><td><code>desc</code></td><td>bool</td><td class="req-no">否</td><td>是否倒序</td></tr>
+<tr><td><code>inspectionServiceId</code></td><td>int</td><td class="req-no">否</td><td>维修 ID（精确）</td></tr>
+<tr><td><code>sId</code></td><td>string</td><td class="req-no">否</td><td>备件 ID（模糊）</td></tr>
+<tr><td><code>eId</code></td><td>string</td><td class="req-no">否</td><td>设备编号（模糊）</td></tr>
+<tr><td><code>sModel</code></td><td>string</td><td class="req-no">否</td><td>备件型号（sparepart.s_model，模糊；非空时先在 Sparepart 库预查 s_id 集合再过滤，无匹配直接返回空）</td></tr>
+<tr><td><code>startDate</code></td><td>string</td><td class="req-no">否</td><td>维修开始日期（年月日，可选，如 2026-09-01）</td></tr>
+<tr><td><code>endDate</code></td><td>string</td><td class="req-no">否</td><td>维修结束日期（年月日，可选，如 2026-09-30，含当天）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "page": 1,
+  "pageSize": 10,
+  "keyword": "",
+  "inspectionServiceId": 0,
+  "sId": "SP",
+  "eId": "F-2026",
+  "sModel": "AF30",
+  "startDate": "2026-09-01",
+  "endDate": "2026-09-30"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p>分页信封，<code>data.list</code> 项结构如下（SparepartReplaceItem，为前端定制的 DTO）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>int</td><td>更换记录 ID（<code>nxp_inspection_service_sparepart.id</code>）</td></tr>
+<tr><td><code>inspectionServiceId</code></td><td>int</td><td>关联维修服务 ID</td></tr>
+<tr><td><code>sId</code></td><td>string</td><td>备件编号</td></tr>
+<tr><td><code>eId</code></td><td>string</td><td>设备编号</td></tr>
+<tr><td><code>oAmount</code></td><td>int</td><td>更换数量</td></tr>
+<tr><td><code>inspectionService</code></td><td>object</td><td>维修服务详情（含反查用户名 <code>userName</code> = <code>nxp_user_info.chinese_name</code>），查不到为 <code>null</code>；其余字段为 NxpInspectionService 全字段（见下表）</td></tr>
+<tr><td><code>sparepart</code></td><td>object</td><td>备件字典（跨库），查不到为 <code>null</code>；字段同 13.1 的 Sparepart</td></tr>
+</tbody>
+</table></div>
+<p><strong>inspectionService 项结构（NxpInspectionService + userName，Onebe 库只读）</strong>：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>int</td><td>维修服务 ID</td></tr>
+<tr><td><code>inspectionId</code></td><td>int</td><td>点检单 ID</td></tr>
+<tr><td><code>contentId</code></td><td>int</td><td>维修内容 ID</td></tr>
+<tr><td><code>positionId</code></td><td>int</td><td>维修位置 ID</td></tr>
+<tr><td><code>userInfoId</code></td><td>int</td><td>维修人 ID</td></tr>
+<tr><td><code>description</code></td><td>string</td><td>维修描述（维修原因）</td></tr>
+<tr><td><code>createdAt</code></td><td>int</td><td>创建时间（unix 秒）</td></tr>
+<tr><td><code>updatedAt</code></td><td>int</td><td>更新时间（unix 秒）</td></tr>
+<tr><td><code>serviceTime</code></td><td>string</td><td>维修日期（<code>YYYY-MM-DD HH:mm:ss</code>）</td></tr>
+<tr><td><code>fileId</code></td><td>string</td><td>附件 ID</td></tr>
+<tr><td><code>status</code></td><td>int8</td><td>状态：1 已完成 / 2 中止维修</td></tr>
+<tr><td><code>facilityId</code></td><td>int</td><td>设备 ID</td></tr>
+<tr><td><code>endTime</code></td><td>string</td><td>结束时间，可为 <code>null</code></td></tr>
+<tr><td><code>abortReasonId</code></td><td>int</td><td>中止原因 ID</td></tr>
+<tr><td><code>abortReasonRemark</code></td><td>string</td><td>中止原因备注</td></tr>
+<tr><td><code>maintenanceReasonId</code></td><td>int64</td><td>维修原因 ID</td></tr>
+<tr><td><code>maintenanceReasonName</code></td><td>string</td><td>维修原因名称</td></tr>
+<tr><td><code>userName</code></td><td>string</td><td>维修人姓名（反查 <code>nxp_user_info.chinese_name</code>）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "inspectionServiceId": 100,
+        "sId": "SP001",
+        "eId": "F-2026-001",
+        "oAmount": 2,
+        "inspectionService": {
+          "id": 100,
+          "inspectionId": 500,
+          "contentId": 20,
+          "positionId": 10,
+          "userInfoId": 8,
+          "description": "滤芯堵塞报警",
+          "createdAt": 1760000000,
+          "updatedAt": 1760000000,
+          "serviceTime": "2026-09-15 08:30:00",
+          "fileId": "",
+          "status": 1,
+          "facilityId": 101,
+          "endTime": "2026-09-15 09:10:00",
+          "abortReasonId": 0,
+          "abortReasonRemark": "",
+          "maintenanceReasonId": 1,
+          "maintenanceReasonName": "定期更换",
+          "userName": "李四"
+        },
+        "sparepart": {
+          "sId": "SP001",
+          "sBrand": "SMC",
+          "sModel": "AF30",
+          "sDescription": "空气过滤滤芯",
+          "...": "其余字段同 13.1"
+        }
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "pagination": { "page": 1, "limit": 10, "total": 1 }
+  },
+  "msg": "操作成功"
+}</code></pre>
+
+<h3 id="is-export">16.2 备件更换台账导出 Excel — <code>POST /inspectionService/sparepartReplaceExcelExport</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>备件更换台账导出 Excel（web 端使用，响应当前筛选全部结果；内部以 pageSize=100000 拉取）。</p>
+<p class="sec-title">请求参数</p>
+<p>与 16.1 相同的 6 个筛选字段（<strong>无分页字段</strong>）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>inspectionServiceId</code></td><td>int</td><td class="req-no">否</td><td>维修 ID（精确）</td></tr>
+<tr><td><code>sId</code></td><td>string</td><td class="req-no">否</td><td>备件 ID（模糊）</td></tr>
+<tr><td><code>eId</code></td><td>string</td><td class="req-no">否</td><td>设备编号（模糊）</td></tr>
+<tr><td><code>sModel</code></td><td>string</td><td class="req-no">否</td><td>备件型号（模糊）</td></tr>
+<tr><td><code>startDate</code></td><td>string</td><td class="req-no">否</td><td>维修开始日期（如 2026-09-01）</td></tr>
+<tr><td><code>endDate</code></td><td>string</td><td class="req-no">否</td><td>维修结束日期（含当天）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "inspectionServiceId": 0,
+  "sId": "",
+  "eId": "",
+  "sModel": "AF30",
+  "startDate": "2026-09-01",
+  "endDate": "2026-09-30"
+}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<blockquote class="warn">响应<strong>非 JSON 信封</strong>，直接输出 xlsx 二进制流：<code>Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</code>；<code>Content-Disposition: attachment; filename*=UTF-8''备件更换台账_yyyymmdd.xlsx</code>（RFC5987 编码中文文件名防乱码）。</blockquote>
+<p>Excel 共 8 列（与列表回显一致）：更换单号、设备编号、备件编号、备件型号、备件描述、维修日期、维修原因、操作人。表头加粗居中、冻结首行、自适应列宽；字段缺失时输出空串，保证行列对齐。</p>
+
+<h3 id="is-smodel">16.3 备件型号下拉 — <code>POST /inspectionService/getSModelFromNxpInspectionService</code></h3>
+<div class="api-line"><span class="method method-post">POST</span><span class="badge badge-jwt">需登录</span></div>
+<p>备件型号下拉（web 端使用）：返回更换记录中实际用过的去重型号（含示例 s_id）。数据源：Onebe 库 <code>nxp_inspection_service_sparepart</code> 去重 s_id → Sparepart 库反查 s_model；保持数据库原值不做 TRIM；按 s_model 排序，每型号取 MIN(s_id)。</p>
+<p class="sec-title">请求参数</p>
+<p>无（请求体可为 <code>{}</code>）。</p>
+<pre class="lang-json"><code>{}</code></pre>
+<p class="sec-title resp">响应数据</p>
+<p><code>data</code> 为<strong>数组</strong>（不分页），项结构（SparepartModelOption）：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>sModel</code></td><td>string</td><td>备件型号（sparepart.s_model，去重）</td></tr>
+<tr><td><code>sId</code></td><td>string</td><td>该型号的一个示例 s_id（去重后取最小）</td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "code": 0,
+  "data": [
+    { "sModel": "AF30", "sId": "SP001" },
+    { "sModel": "AF40", "sId": "SP005" }
+  ],
+  "msg": "操作成功"
+}</code></pre>
+
+<hr>
+<h2 id="m-other">17. 其它</h2>
+
+<h3 id="other-health">17.1 健康检查 — <code>GET /health</code></h3>
+<div class="api-line"><span class="method method-get">GET</span><span class="badge badge-free">免认证</span></div>
+<p>对 <code>sophub</code>（SOPHubDB）与 <code>onebe</code>（OnebeDB）两个库各做 3 秒超时 Ping，任一不可用则 HTTP 503。</p>
+<p class="sec-title">请求参数</p>
+<p>无。</p>
+<p class="sec-title resp">响应数据</p>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>status</code></td><td>string</td><td><code>ok</code>（两库均正常）/ <code>degraded</code>（任一库不可用，此时 HTTP 503）</td></tr>
+<tr><td><code>services.sophub</code></td><td>string</td><td><code>ok</code> / <code>down</code></td></tr>
+<tr><td><code>services.onebe</code></td><td>string</td><td><code>ok</code> / <code>down</code></td></tr>
+</tbody>
+</table></div>
+<pre class="lang-json"><code>{
+  "status": "ok",
+  "services": {
+    "sophub": "ok",
+    "onebe": "ok"
+  }
+}</code></pre>
+
+<h3 id="other-uploads">17.2 静态资源 — <code>GET /uploads/*filepath</code></h3>
+<div class="api-line"><span class="method method-get">GET</span><span class="badge badge-free">免认证</span><span class="badge badge-note">免超时</span></div>
+<p>上传文件的静态服务（目录取配置 <code>server.uploadDir</code>），豁免服务器级读写超时。media/scene 等上传接口返回的 <code>path</code> 即指向此处；挂载 <code>ResourceURL()</code> 的接口出参中会改写为完整 URL。</p>
+<p class="sec-title">请求参数</p>
+<p>路径参数 <code>filepath</code>：上传文件相对路径，如 <code>/uploads/media/manual-20260906120145123.pdf</code>。</p>
+<p class="sec-title resp">响应数据</p>
+<p>文件二进制内容（Content-Type 按扩展名推断）。</p>
+</main>
+<button id="themeBtn" title="切换明暗主题" aria-label="切换明暗主题">
+  <svg class="icon-moon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M9.598 1.591a.749.749 0 0 1 .785-.175 7.001 7.001 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Zm1.616 1.945a7 7 0 0 1-7.678 7.678 5.499 5.499 0 1 0 7.678-7.678Z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0Zm0 13a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13ZM2.343 2.343a.75.75 0 0 1 1.061 0l1.06 1.061a.75.75 0 1 1-1.06 1.06l-1.06-1.06a.75.75 0 0 1 0-1.06Zm9.193 9.193a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061ZM16 8a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm10.657-5.657a.75.75 0 0 1 0 1.061l-1.06 1.06a.75.75 0 1 1-1.061-1.06l1.06-1.06a.75.75 0 0 1 1.061 0ZM4.464 11.536a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 0 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0Z"/></svg>
+</button>
+<button id="toTop" title="返回顶部">↑</button>
+<script>
+(function () {
+  // JSON 语法高亮
+  var esc = function (s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  };
+  document.querySelectorAll('pre.lang-json > code').forEach(function (code) {
+    var raw = code.textContent;
+    var html = esc(raw).replace(
+      /("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false)\b|\bnull\b|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g,
+      function (m, str, colon, bool) {
+        if (str !== undefined) {
+          return colon ? '<span class="tk-key">' + str + '</span>' + colon
+                       : '<span class="tk-str">' + str + '</span>';
+        }
+        if (bool !== undefined) return '<span class="tk-bool">' + m + '</span>';
+        if (m === 'null') return '<span class="tk-null">null</span>';
+        return '<span class="tk-num">' + m + '</span>';
+      }
+    );
+    code.innerHTML = html;
+  });
+  // 主题切换
+  var themeBtn = document.getElementById('themeBtn');
+  themeBtn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('api-doc-theme', next); } catch (e) {}
+  });
+  // 侧边栏目录高亮
+  var links = Array.prototype.slice.call(document.querySelectorAll('#sidebar li a'));
+  var targets = links.map(function (a) {
+    return document.getElementById(a.getAttribute('href').slice(1));
+  }).filter(Boolean);
+  function onScroll() {
+    var pos = window.scrollY + 90, idx = 0;
+    for (var i = 0; i < targets.length; i++) {
+      if (targets[i].offsetTop <= pos) idx = i;
+    }
+    links.forEach(function (a, i) { a.classList.toggle('active', i === idx); });
+    var toTop = document.getElementById('toTop');
+    toTop.style.display = window.scrollY > 600 ? 'block' : 'none';
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  document.getElementById('toTop').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+</body>
+</html>
