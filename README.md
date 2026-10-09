@@ -61,14 +61,11 @@ sop-2.4/
 
 ### 配置
 
-复制并修改 `config.yaml`（含三库连接串、端口、JWT 密钥等）：
+直接编辑 `config.yaml`（含三库连接串、端口、JWT 密钥等）后启动即可：
 
 > ⚠️ `config.yaml` 内敏感信息为占位/示例；生产环境必须更换 JWT secret、appTokenKey 及数据库口令，且 `server.mode` 置为 `release`、`server.skipPasswordCheck` 置为 `false`。
 
-```bash
-cp config.yaml config.local.yaml
-# 按需编辑后启动时指定
-```
+> 提示：修改 `config.yaml` 时，其余配置项支持热重载自动生效；但三库连接串、JWT 密钥与 `server.port` 需重启服务方可生效（连接池与密钥在启动时一次性初始化）。
 
 ### 启动
 
