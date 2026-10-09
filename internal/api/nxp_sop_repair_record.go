@@ -16,26 +16,26 @@ type RepairRecordApi struct{}
 
 // CompleteRepairRequest 完成维修记录请求
 // 前端 EngineerApp 提交字段：id, faultCode, photos[], isNewIssue
-// RepairTime 可选（RFC3339 或 "2006-01-02 15:04:05"），表示维修实际开始时间；
+// RepairTime 可选（"2006-01-02 15:04:05" 或 RFC3339），表示维修实际开始时间；
 // 缺省时后端按「本次提交即完工」处理，开始时间取当前时间。
 type SaveRepairRecordRequest struct {
-	ID                   uint      `json:"id"`
-	GuideID              uint      `json:"guideId"`
-	FacilityID           uint      `json:"facilityId"`
-	EngineerID           uint      `json:"engineerId"`
-	FaultCode            string    `json:"faultCode"`
-	MachineModelID       uint      `json:"machineModelId"`
-	StepID               uint      `json:"stepId"`
-	RepairPositionID     uint      `json:"repairPositionId"`
-	RepairContentID      uint      `json:"repairContentId"`
-	SituationDescription string    `json:"situationDescription"`
-	RequestNumber        string    `json:"requestNumber"`
-	RepairNumber         string    `json:"repairNumber"`
-	RepairTime           time.Time `json:"repairTime"`
-	Photos               []string  `json:"photos"`
-	SparepartSIDs        []string  `json:"sparepartSIDs"`
-	IsNewIssue           bool      `json:"isNewIssue"`
-	Status               string    `json:"status"` // PDA 提交的维修状态（如：维修中/已完成/待料中）
+	ID                   uint            `json:"id"`
+	GuideID              uint            `json:"guideId"`
+	FacilityID           uint            `json:"facilityId"`
+	EngineerID           uint            `json:"engineerId"`
+	FaultCode            string          `json:"faultCode"`
+	MachineModelID       uint            `json:"machineModelId"`
+	StepID               uint            `json:"stepId"`
+	RepairPositionID     uint            `json:"repairPositionId"`
+	RepairContentID      uint            `json:"repairContentId"`
+	SituationDescription string          `json:"situationDescription"`
+	RequestNumber        string          `json:"requestNumber"`
+	RepairNumber         string          `json:"repairNumber"`
+	RepairTime           model.LocalTime `json:"repairTime"`
+	Photos               []string        `json:"photos"`
+	SparepartSIDs        []string        `json:"sparepartSIDs"`
+	IsNewIssue           bool            `json:"isNewIssue"`
+	Status               string          `json:"status"` // PDA 提交的维修状态（如：维修中/已完成/待料中）
 }
 
 // SaveRepairRecordWithDetails 保存维修执行记录（PDA 端完工/结束提交）
@@ -43,6 +43,7 @@ type SaveRepairRecordRequest struct {
 func (a RepairRecordApi) SaveRepairRecordWithDetails(c *gin.Context) {
 	var req SaveRepairRecordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
+		println(err.Error())
 		bindFail(c, err)
 		return
 	}
@@ -69,7 +70,7 @@ func (a RepairRecordApi) SaveRepairRecordWithDetails(c *gin.Context) {
 	}
 	// 开始时间：前端传了就用前端的真实开始时间；未传（零值）时保持原行为，由 service 兜底为当前时间
 	if !req.RepairTime.IsZero() {
-		start := model.LocalTime(req.RepairTime)
+		start := req.RepairTime
 		rec.RepairTime = &start
 	}
 

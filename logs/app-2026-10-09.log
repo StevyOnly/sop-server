@@ -1,0 +1,34 @@
+{"level":"INFO","ts":"2026-10-09T20:02:42.707+0800","caller":"database/database.go:33","msg":"数据库连接成功: SOPHub (sqlserver)"}
+{"level":"INFO","ts":"2026-10-09T20:02:43.021+0800","caller":"database/database.go:46","msg":"数据库连接成功: Onebe (sqlserver, 只读)"}
+{"level":"INFO","ts":"2026-10-09T20:02:43.169+0800","caller":"database/database.go:59","msg":"数据库连接成功: SPAREPART (sqlserver, 只读)"}
+{"level":"INFO","ts":"2026-10-09T20:02:43.823+0800","caller":"initialize/database.go:137","msg":"已为维修记录表补充新增列","table":"nxp_sop_repair_record"}
+{"level":"INFO","ts":"2026-10-09T20:02:43.853+0800","caller":"initialize/database.go:75","msg":"已为步骤表补充新增列","table":"nxp_sop_guide_step"}
+{"level":"INFO","ts":"2026-10-09T20:02:43.880+0800","caller":"initialize/database.go:94","msg":"已清理废弃数据库列"}
+{"level":"INFO","ts":"2026-10-09T20:02:43.884+0800","caller":"sop-2.4/main.go:45","msg":"server starting","addr":":8000"}
+{"level":"WARN","ts":"2026-10-09T20:02:57.440+0800","caller":"api/request.go:41","msg":"request bind failed","path":"/api/v1/repairRecords/saveRepairRecordWithDetails","error":"parsing time \"2026-10-09 19:26:05.000\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \" 19:26:05.000\" as \"T\""}
+{"level":"INFO","ts":"2026-10-09T20:02:57.440+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/repairRecords/saveRepairRecordWithDetails","ip":"192.168.3.200","latency":0.1521342,"size":49}
+{"level":"WARN","ts":"2026-10-09T20:03:39.033+0800","caller":"api/request.go:41","msg":"request bind failed","path":"/api/v1/repairRecords/saveRepairRecordWithDetails","error":"parsing time \"2026-10-09 19:26:05\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \" 19:26:05\" as \"T\""}
+{"level":"INFO","ts":"2026-10-09T20:03:39.034+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/repairRecords/saveRepairRecordWithDetails","ip":"192.168.3.200","latency":0.1477033,"size":49}
+{"level":"INFO","ts":"2026-10-09T20:05:11.498+0800","caller":"sop-2.4/main.go:56","msg":"shutting down server..."}
+{"level":"INFO","ts":"2026-10-09T20:05:11.498+0800","caller":"sop-2.4/main.go:66","msg":"server exited"}
+{"level":"INFO","ts":"2026-10-09T20:11:19.198+0800","caller":"database/database.go:33","msg":"数据库连接成功: SOPHub (sqlserver)"}
+{"level":"INFO","ts":"2026-10-09T20:11:19.488+0800","caller":"database/database.go:46","msg":"数据库连接成功: Onebe (sqlserver, 只读)"}
+{"level":"INFO","ts":"2026-10-09T20:11:19.643+0800","caller":"database/database.go:59","msg":"数据库连接成功: SPAREPART (sqlserver, 只读)"}
+{"level":"INFO","ts":"2026-10-09T20:11:20.270+0800","caller":"initialize/database.go:137","msg":"已为维修记录表补充新增列","table":"nxp_sop_repair_record"}
+{"level":"INFO","ts":"2026-10-09T20:11:20.296+0800","caller":"initialize/database.go:75","msg":"已为步骤表补充新增列","table":"nxp_sop_guide_step"}
+{"level":"INFO","ts":"2026-10-09T20:11:20.322+0800","caller":"initialize/database.go:94","msg":"已清理废弃数据库列"}
+{"level":"INFO","ts":"2026-10-09T20:11:20.324+0800","caller":"sop-2.4/main.go:45","msg":"server starting","addr":":8000"}
+{"level":"INFO","ts":"2026-10-09T20:11:30.237+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/repairRecords/saveRepairRecordWithDetails","ip":"192.168.3.200","latency":0.2793274,"size":480}
+{"level":"INFO","ts":"2026-10-09T20:12:43.869+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/base/login","ip":"192.168.3.200","latency":0.4385407,"size":326}
+{"level":"INFO","ts":"2026-10-09T20:12:44.048+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/menu/getUserMenus","ip":"192.168.3.200","latency":0.1676965,"size":975}
+{"level":"INFO","ts":"2026-10-09T20:12:45.791+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/inquiries/list","ip":"192.168.3.200","latency":0.0529297,"size":2685}
+{"level":"INFO","ts":"2026-10-09T20:12:45.848+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/executionOption/getExecutionOptionList","ip":"192.168.3.200","latency":0.0525616,"size":869}
+{"level":"INFO","ts":"2026-10-09T20:12:45.878+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"GET","path":"/api/v1/user/getUserInfo","ip":"192.168.3.200","latency":0.1395361,"size":651}
+{"level":"WARN","ts":"2026-10-09T20:12:46.066+0800","caller":"logger/gorm.go:96","msg":"SLOW SQL","line":"D:/dev/projects/develop/stevy/sop/sop-2.4/internal/service/nxp_facility.go:48","sql":"SELECT * FROM `nxp_facility` WHERE id IN (42,1,40,41)","rows":3,"cost":0.2124707,"slow":0.2}
+{"level":"INFO","ts":"2026-10-09T20:12:46.067+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/facility/getFacilitiesByIDs","ip":"192.168.3.200","latency":0.2130021,"size":1390}
+{"level":"INFO","ts":"2026-10-09T20:12:46.174+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/user/getUsersByIDs","ip":"192.168.3.200","latency":0.1018142,"size":644}
+{"level":"INFO","ts":"2026-10-09T20:12:47.384+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/guides/list","ip":"192.168.3.200","latency":0.1058582,"size":4509}
+{"level":"INFO","ts":"2026-10-09T20:12:47.510+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/repairRecords/list","ip":"192.168.3.200","latency":0.2255688,"size":1243}
+{"level":"INFO","ts":"2026-10-09T20:12:47.617+0800","caller":"middleware/logger.go:43","msg":"request","status":200,"method":"POST","path":"/api/v1/user/getUsersByIDs","ip":"192.168.3.200","latency":0.1028734,"size":644}
+{"level":"INFO","ts":"2026-10-09T20:12:49.678+0800","caller":"sop-2.4/main.go:56","msg":"shutting down server..."}
+{"level":"INFO","ts":"2026-10-09T20:12:49.679+0800","caller":"sop-2.4/main.go:66","msg":"server exited"}
